@@ -30,3 +30,35 @@ Bluto: DNS recon | Brute forcer | DNS Zone Transfer,.
                https://github.com/RandomStormProjects/Bluto
 
 
+ Install Instructions
+ ====================
+ All you need to use Bluto is the distribution file.
+ 
+ Bluto requires various other dependencies. So to make things as easy as possible I
+ have created a distribution package to install the relevant dependents during the
+ install. For the install to work correctly please install 'easy_install'.
+
+ You can find instructions for installing easy_install/setuptools from here 
+ https://pypi.python.org/pypi/setuptools.
+
+
+1.Mac and Unix users can simply use the following command; 
+
+>sudo curl https://bootstrap.pypa.io/ez_setup.py -o - | python
+
+
+2.Once the setuptools/easy_install, install is completed download the Bluto-1.0.0.tar.gz
+  file and execute the following.
+
+>sudo easy_install Bluto-1.0.0.tar.gz
+
+Note: You can use pip to install swell (if you already have this installed, to check if it is installed type ‘pip’. pip install Bluto-1.0.0.tar.gz.
+
+3.You should now be able to execute the script from any working dir in a terminal (may
+  need to close and reopen if in the same terminal as the one used to run the setup
+  initially). 
+
+>bluto.py
+
+
+
