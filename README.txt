@@ -20,12 +20,11 @@ BBBBBBBBBBBBBBBBB  llllllll   uuuuuuuu  uuuu       ttttttttttt    ooooooooooo
  
 Bluto: DNS recon | Brute forcer | DNS Zone Transfer,.
 
- The target domain is queried for MX and NS records. SubDomains are passively gathered via 
- NetCraft. The target domain then queries each NS server for potential Zone Transfers.
- If none of them gives up their spinach, Bluto will brute force subdomains using parallel 
- sub processing on the top 20000 of the The Alexa Top 1 Million subdomains. NetCraft
- results are presented individually and are then compared to the brute force results, 
- duplications are removed and particularly interesting results are highlighted.
+ The target domain is queried for MX and NS records. SubDomains are passively gathered via NetCraft. The target domain then
+ queries each NS server for potential Zone Transfers.
+ If none of them gives up their spinach, Bluto will brute force subdomains using parallel sub processing on the top 20000 of the
+ The Alexa Top 1 Million subdomains. NetCraft results are presented individually and are then compared to the brute force
+ results, duplications are removed and particularly interesting results are highlighted.
 
              Author: Darryl Lane  |  Twitter: @darryllane101
                https://github.com/RandomStormProjects/Bluto
