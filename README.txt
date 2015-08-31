@@ -46,15 +46,14 @@ Bluto: DNS recon | Brute forcer | DNS Zone Transfer,.
 
 >sudo curl https://bootstrap.pypa.io/ez_setup.py -o - | python
 
-
 2.Once the setuptools/easy_install, install is completed download the distro from here: 
   https://github.com/RandomStormProjects/Bluto/blob/master/Bluto-1.0.0.tar.gz (right click the link and save)
   and execute the following.
 
 >sudo easy_install Bluto-1.0.0.tar.gz
 
- Note: You can use pip to install aswell (if you already have this installed, to check if it is installed type ‘pip’. pip
-       install Bluto-1.0.0.tar.gz.
+ Note: You can use pip to install aswell (if you already have this installed, to check if it is installed type ‘pip’.
+       pip install Bluto-1.0.0.tar.gz.
 
 3.You should now be able to execute the script from any working dir in a terminal (may
   need to close and reopen if in the same terminal as the one used to run the setup
