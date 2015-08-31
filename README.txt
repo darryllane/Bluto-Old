@@ -48,7 +48,7 @@ Bluto: DNS recon | Brute forcer | DNS Zone Transfer,.
 
 
 2.Once the setuptools/easy_install, install is completed download the distro from here: 
-  https://github.com/RandomStormProjects/Bluto/blob/master/dist/Bluto-1.0.0.tar.gz (right click the link and save)
+  https://github.com/RandomStormProjects/Bluto/blob/master/Bluto-1.0.0.tar.gz (right click the link and save)
   and execute the following.
 
 >sudo easy_install Bluto-1.0.0.tar.gz
