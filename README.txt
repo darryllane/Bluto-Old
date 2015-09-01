@@ -123,8 +123,10 @@ Upgrade Instructions
   root@pentest:~/Desktop# pip install Bluto-1.1.0.tar.gz  --upgrade
   Processing ./Bluto-1.1.0.tar.gz
   Requirement already up-to-date: dnspython in /usr/local/lib/python2.7/dist-packages (from Bluto==1.1.0)
-  Requirement already up-to-date: termcolor in /usr/local/lib/python2.7/dist-packages/termcolor-1.1.0-py2.7.egg (from Bluto==1.1.0)
+  Requirement already up-to-date: termcolor in /usr/local/lib/python2.7/dist-packages/termcolor-1.1.0-py2.7.egg 
+  (from Bluto==1.1.0)
   Requirement already up-to-date: BeautifulSoup4 in /usr/local/lib/python2.7/dist-packages (from Bluto==1.1.0)
+  
   Installing collected packages: Bluto
     Found existing installation: Bluto 1.1.0
       Uninstalling Bluto-1.1.0:
