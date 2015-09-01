@@ -29,9 +29,8 @@ Bluto: DNS recon | Brute forcer | DNS Zone Transfer,.
              Author: Darryl Lane  |  Twitter: @darryllane101
                https://github.com/RandomStormProjects/Bluto
 
-
- Install Instructions
- ====================
+Install Instructions
+====================
  All you need to use Bluto is the distribution file.
  
  Bluto requires various other dependencies. So to make things as easy as possible I
@@ -79,7 +78,7 @@ Note: To test if pip is already installed execute;
   Successfully installed Bluto-1.1.0
   root@pentest:~/Desktop#
 
-3.You should now be able to execute 'bluto.py' from any working directory in a any terminal (may
+3.You should now be able to execute 'bluto.py' from any working directory in any terminal ( you may
   need to close and reopen if in the same terminal as the one used to run the setup initially). 
 
   >bluto.py
@@ -113,3 +112,23 @@ Note: To test if pip is already installed execute;
                
   Target Domain:
 
+Upgrade Instructions
+====================
+
+1. Simply use the upgrade switch:
+
+  >sudo pip install Bluto-1.1.0.tar.gz --upgrade
+  
+  Example:
+  root@pentest:~/Desktop# pip install Bluto-1.1.0.tar.gz  --upgrade
+  Processing ./Bluto-1.1.0.tar.gz
+  Requirement already up-to-date: dnspython in /usr/local/lib/python2.7/dist-packages (from Bluto==1.1.0)
+  Requirement already up-to-date: termcolor in /usr/local/lib/python2.7/dist-packages/termcolor-1.1.0-py2.7.egg (from Bluto==1.1.0)
+  Requirement already up-to-date: BeautifulSoup4 in /usr/local/lib/python2.7/dist-packages (from Bluto==1.1.0)
+  Installing collected packages: Bluto
+    Found existing installation: Bluto 1.1.0
+      Uninstalling Bluto-1.1.0:
+      Successfully uninstalled Bluto-1.1.0
+    Running setup.py install for Bluto
+  Successfully installed Bluto-1.1.0
+  root@pentest:~/Desktop# 
