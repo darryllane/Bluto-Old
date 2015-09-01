@@ -36,30 +36,80 @@ Bluto: DNS recon | Brute forcer | DNS Zone Transfer,.
  
  Bluto requires various other dependencies. So to make things as easy as possible I
  have created a distribution package to install the relevant dependents during the
- install. For the install to work correctly please install 'easy_install'.
+ install. For the install to work correctly please install 'pip'.
 
- You can find instructions for installing easy_install/setuptools from here 
- https://pypi.python.org/pypi/setuptools.
+Note: To test if pip is already installed execute;
 
+  >pip -V
 
-1.Mac and Unix users can simply use the following command; 
+  Example:
+  root@pentest:~# pip -V
+  pip 7.1.2 from /usr/local/lib/python2.7/dist-packages (python 2.7)
+  root@pentest:~# 
 
->sudo curl https://bootstrap.pypa.io/ez_setup.py -o - | python
+1.Mac and Kali users can simply use the following command to download and install pip; 
 
-2.Once the setuptools/easy_install, install is completed download the distro from here: 
-  https://github.com/RandomStormProjects/Bluto/blob/master/Bluto-1.0.0.tar.gz (right click the link and save)
+  >sudo curl https://bootstrap.pypa.io/get-pip.py -o - | python
+
+  Example:
+  root@pentest:~# sudo curl https://bootstrap.pypa.io/get-pip.py -o - | python
+    % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                   Dload  Upload   Total   Spent    Left  Speed
+  100 1379k  100 1379k    0     0  2323k      0 --:--:-- --:--:-- --:--:-- 2450k
+  Requirement already up-to-date: pip in /usr/local/lib/python2.7/dist-packages
+  root@pentest:~# 
+
+2.Once pip has successfully downloaded and installed, download the distro from here: 
+  https://github.com/RandomStormProjects/Bluto/blob/master/Bluto-1.1.0.tar.gz (right click the link and save)
   and execute the following.
 
->sudo easy_install Bluto-1.0.0.tar.gz
+  >sudo pip install Bluto-1.1.0.tar.gz
 
- Note: You can use pip to install aswell (if you already have this installed, to check if it is installed type ‘pip’.
-       pip install Bluto-1.0.0.tar.gz.
+  Example:
+  root@pentest:~/Desktop# pip install Bluto-1.1.0.tar.gz 
+  Processing ./Bluto-1.1.0.tar.gz
+  Requirement already satisfied (use --upgrade to upgrade): 
+  dnspython in /usr/local/lib/python2.7/dist-packages (from Bluto==1.1.0)
+  Requirement already satisfied (use --upgrade to upgrade): 
+  termcolor in /usr/local/lib/python2.7/dist-packages/termcolor-1.1.0-py2.7.egg (from Bluto==1.1.0)
+  Requirement already satisfied (use --upgrade to upgrade): 
+  BeautifulSoup4 in /usr/local/lib/python2.7/dist-packages (from Bluto==1.1.0)
+  Installing collected packages: Bluto
+  Running setup.py install for Bluto
+  Successfully installed Bluto-1.1.0
+  root@pentest:~/Desktop#
 
-3.You should now be able to execute the script from any working dir in a terminal (may
-  need to close and reopen if in the same terminal as the one used to run the setup
-  initially). 
+3.You should now be able to execute 'bluto.py' from any working directory in a any terminal (may
+  need to close and reopen if in the same terminal as the one used to run the setup initially). 
 
->bluto.py
+  >bluto.py
 
+  Example:
+  root@pentest:~/Desktop# bluto.py 
 
+  BBBBBBBBBBBBBBBBB  lllllll                       tttt                          
+  B::::::::::::::::B l:::::l                     ttt:::t                          
+  B::::::BBBBBB:::::Bl:::::l                     t:::::t                          
+  BB:::::B     B:::::l:::::l                     t:::::t                          
+    B::::B     B:::::Bl::::luuuuuu    uuuuuttttttt:::::ttttttt      ooooooooooo   
+    B::::B     B:::::Bl::::lu::::u    u::::t:::::::::::::::::t    oo:::::::::::oo 
+    B::::BBBBBB:::::B l::::lu::::u    u::::t:::::::::::::::::t   o:::::::::::::::o
+    B:::::::::::::BB  l::::lu::::u    u::::tttttt:::::::tttttt   o:::::ooooo:::::o
+    B::::BBBBBB:::::B l::::lu::::u    u::::u     t:::::t         o::::o     o::::o
+    B::::B     B:::::Bl::::lu::::u    u::::u     t:::::t         o::::o     o::::o
+    B::::B     B:::::Bl::::lu::::u    u::::u     t:::::t         o::::o     o::::o
+    B::::B     B:::::Bl::::lu:::::uuuu:::::u     t:::::t    ttttto::::o     o::::o
+  BB:::::BBBBBB::::::l::::::u:::::::::::::::uu   t::::::tttt:::::o:::::ooooo:::::o
+  B:::::::::::::::::Bl::::::lu:::::::::::::::u   tt::::::::::::::o:::::::::::::::o
+  B::::::::::::::::B l::::::l uu::::::::uu:::u     tt:::::::::::ttoo:::::::::::oo 
+  BBBBBBBBBBBBBBBBB  llllllll   uuuuuuuu  uuuu       ttttttttttt    ooooooooooo   
+                                                            
+ 
+              DNS recon | Brute forcer | DNS Zone Transfers
+
+              Author: Darryl Lane  |  Twitter: @darryllane101
+             
+               https://github.com/RandomStormProjects/Bluto
+               
+  Target Domain:
 
