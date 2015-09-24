@@ -13,23 +13,22 @@ Bluto requires various other dependencies. So to make things as easy as possible
 **Install Instructions**
 Note: To test if pip is already installed execute;
 
-  >pip -V
+`pip -V`
 
- 1. Mac and Kali users can simply use the following command to download and install `pip`;
+1. Mac and Kali users can simply use the following command to download and install `pip`;
 
-  >sudo curl https://bootstrap.pypa.io/get-pip.py -o - | python
+`curl https://bootstrap.pypa.io/get-pip.py -o - | python`
 
- 2. Once `pip` has successfully downloaded and installed, we can install Bluto:
+2. Once `pip` has successfully downloaded and installed, we can install Bluto:
  
-  >pip install git+git://github.com/RandomStorm/Bluto
+`pip install git+git://github.com/RandomStorm/Bluto`
 
- 3. You should now be able to execute 'bluto.py' from any working directory in any terminal.
-
+3. You should now be able to execute 'bluto.py' from any working directory in any terminal.
  
-  >bluto.py
+`bluto.py`
 
 **Upgrade Instructions**
 
- 1. The upgrade process is as simple as;
+1. The upgrade process is as simple as;
 
->pip install git+git://github.com/RandomStorm/Bluto --upgrade
+`pip install git+git://github.com/RandomStorm/Bluto --upgrade`
