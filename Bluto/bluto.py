@@ -298,7 +298,7 @@ print """
                 {2} | {3} | {4}
                {0}  |  {1}
                  {5}
-""" . format (colored("Author: Darryl Lane", 'blue'),colored("Twitter: @darryllane101", 'blue'),colored("DNS Recon", 'green'),colored("Brute forcer", 'green'),colored("DNS Zone Transfers", 'green'),colored("https://github.com/RandomStormProjects/Bluto", 'green'))
+""" . format (colored("Author: Darryl Lane", 'blue'),colored("Twitter: @darryllane101", 'blue'),colored("DNS Recon", 'green'),colored("Brute forcer", 'green'),colored("DNS Zone Transfers", 'green'),colored("https://github.com/RandomStorm/Bluto", 'green'))
 
 domain = raw_input("\nTarget Domain: ")
 path = str(site.getsitepackages()[0])
