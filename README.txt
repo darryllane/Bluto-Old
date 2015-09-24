@@ -27,7 +27,7 @@ Bluto: DNS recon | Brute forcer | DNS Zone Transfer,.
  results, duplications are removed and particularly interesting results are highlighted.
 
              Author: Darryl Lane  |  Twitter: @darryllane101
-               https://github.com/RandomStormProjects/Bluto
+               https://github.com/RandomStorm/Bluto
 
 Install Instructions
 ====================
@@ -62,7 +62,7 @@ Note: To test if pip is already installed execute;
 2.Once pip has successfully downloaded and installed, we can install Bluto:
 
   Example:
-  rs-mac:/ darryllane$ git clone https://github.com/RandomStormProjects/Bluto.git
+  root@pentest:~ git clone https://github.com/RandomStorm/Bluto.git
   
   Cloning into 'Bluto'...
   remote: Counting objects: 112, done.
@@ -71,7 +71,7 @@ Note: To test if pip is already installed execute;
   Receiving objects: 100% (112/112), 1.25 MiB | 926.00 KiB/s, done.
   Resolving deltas: 100% (37/37), done.
   Checking connectivity... done.
-  rs-mac:/ darryllane$ 
+  root@pentest:~ 
   
 
   >sudo pip install Bluto-1.1.0.tar.gz
@@ -121,7 +121,7 @@ Note: To test if pip is already installed execute;
 
               Author: Darryl Lane  |  Twitter: @darryllane101
              
-               https://github.com/RandomStormProjects/Bluto
+               https://github.com/RandomStorm/Bluto
                
   Target Domain:
 
