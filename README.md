@@ -12,6 +12,7 @@ The target domain is queried for MX and NS records. Sub-domains are passively ga
 Bluto requires various other dependencies. So to make things as easy as possible, `pip` is used for the installation. This does mean you will need to have pip installed prior to attempting the Bluto install.
 
 **Pip Install Instructions**
+
 Note: To test if pip is already installed execute.
 
 `pip -V`
@@ -22,11 +23,11 @@ Note: To test if pip is already installed execute.
 
 **Bluto Install Instructions**
 
-2. Once `pip` has successfully downloaded and installed, we can install Bluto:
+1. Once `pip` has successfully downloaded and installed, we can install Bluto:
  
 `pip install git+git://github.com/RandomStorm/Bluto`
 
-3. You should now be able to execute 'bluto.py' from any working directory in any terminal.
+2. You should now be able to execute 'bluto.py' from any working directory in any terminal.
  
 `bluto.py`
 
