@@ -1,7 +1,6 @@
 MANIFEST.in
 README.txt
 setup.py
-Bluto/.DS_Store
 Bluto/__init__.py
 Bluto/bluto.py
 Bluto.egg-info/PKG-INFO
