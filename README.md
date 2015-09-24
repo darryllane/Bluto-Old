@@ -17,23 +17,23 @@ Note: To test if pip is already installed execute.
 
 `pip -V`
 
-(1. Mac and Kali users can simply use the following command to download and install `pip`.
+1: Mac and Kali users can simply use the following command to download and install `pip`.
 
 `curl https://bootstrap.pypa.io/get-pip.py -o - | python`
 
 **Bluto Install Instructions**
 
-(1. Once `pip` has successfully downloaded and installed, we can install Bluto:
+1: Once `pip` has successfully downloaded and installed, we can install Bluto:
 
 `pip install git+git://github.com/RandomStorm/Bluto`
 
-(2. You should now be able to execute 'bluto.py' from any working directory in any terminal.
+2: You should now be able to execute 'bluto.py' from any working directory in any terminal.
  
 `bluto.py`
 
 **Upgrade Instructions**
 
-(1. The upgrade process is as simple as;
+1: The upgrade process is as simple as;
 
 `pip install git+git://github.com/RandomStorm/Bluto --upgrade`
 
