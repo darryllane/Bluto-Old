@@ -1,5 +1,5 @@
+LICENSE.txt
 MANIFEST.in
-README.txt
 setup.py
 Bluto/__init__.py
 Bluto/bluto.py

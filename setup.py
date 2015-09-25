@@ -10,7 +10,7 @@ setup(
     include_package_data=True,
     license='LICENSE.txt',
     description='DNS recon, brutfocing, DNS transfers.',
-    long_description=open('README.txt').read(),
+    long_description=open('README.md').read(),
     scripts=['Bluto/bluto.py'],
     install_requires=[
         "dnspython",
