@@ -8,11 +8,14 @@ import requests, re, collections
 from bs4 import BeautifulSoup
 import urllib2, hashlib, json, site
 
+version = "1.1.5"
+
 def output_data(target_dict, sub_intrest):
+    sorted_dict = collections.OrderedDict(sorted(target_dict.items()))
     print "Bluto Results: \n"
     for item in target_dict:
         if item in sub_intrest:
-            print colored(item + "\t", 'red'), colored(target_dict[item], 'red')
+            print colored(item + "\t", 'red'), colored(sorted_dict[item], 'red')
         else:
             print item + "\t",target_dict[item]
 
@@ -40,8 +43,8 @@ def zone_trans(zn_list, domain):
                 vuln = False
                 vulnerable_listF.append(ns)
             else:
-                print """An unexpected error has occured. Please report the error and its context to https://github.com/RandomStormProjects/Bluto/issues, thank you.
-                """            
+                print """An unexpected error has occured. Please report the error and it's context to https://github.com/RandomStorm/Bluto/issues, thank you."""
+                print error          
                 
     
     if vulnerable_listF:
@@ -70,8 +73,8 @@ def zone_trans(zn_list, domain):
                 if error == "[Errno -5] No address associated with hostname":
                     pass
                 else:
-                    print """An unexpected error has occured. Please report the error and its context to https://github.com/RandomStormProjects/Bluto/issues, thank you.
-                    """
+                    print """An unexpected error has occured. Please report the error and it's context to https://github.com/RandomStorm/Bluto/issues, thank you."""
+                    print error
             print z[n].to_text(n)
 
         clean_dump = sorted(set(dump_list))
@@ -151,7 +154,9 @@ def get_subs(filename):
         for sub in subs:
             full_list.append(str(sub.lower() + "." + domain))
     except Exception as e:
-        print """\n\tBluto can't find its Subdomain list. Please make sure 'subdomains-top1mil-20000.txt' is {}.""". format (str(path) + "/Bluto/doc/subdomains-top1mil-20000.txt")
+        error = str(e)
+        print """An unexpected error has occured. Please report the error and it's context to https://github.com/RandomStorm/Bluto/issues, thank you."""
+        print error
         sys.exit()
         
     return full_list    
@@ -164,7 +169,9 @@ def get_sub_interest(filename):
             full_list.append(str(sub.lower() + "." + domain))
     
     except Exception as e:
-        print """\n\tBluto can't find its Sub_Interest list. Please make sure 'sub_interest.txt' is in Bludo's root directory."""
+        error = str(e)
+        print """An unexpected error has occured. Please report the error and it's context to https://github.com/RandomStorm/Bluto/issues, thank you."""
+        print error
         sys.exit()
         
     return full_list
@@ -182,7 +189,7 @@ def get_netcraft(domain):
             netcraft_list.append(item + "." + domain + " " + addr)
         except Exception as e:
             error = str(e)
-            print """An unexpected error has occured. Please report the error and its context to https://github.com/RandomStormProjects/Bluto/issues, thank you."""
+            print """An unexpected error has occured. Please report the error and it's context to https://github.com/RandomStorm/Bluto/issues, thank you."""
             print error
             continue
             
@@ -195,9 +202,9 @@ def get_netcraft(domain):
         
 class NetcraftAPI(object):
     """
-    This is the (unofficial) Python API for netcraft.com Website.
-    Using this code, you can retrieve subdomains. This has been modified
-    from its original state that can be found on the following url. 
+    This is the (unofficial) Python API for the netcraft.com Website.
+    Using this code, you can retrieve subdomains. This has been modified from its 
+    original state by the authors of Bluto, the original can be found on the following url. 
     https://github.com/PaulSec/API-netcraft.com
     
     """    
@@ -281,7 +288,7 @@ print """
 BBBBBBBBBBBBBBBBB  lllllll                       tttt                          
 B::::::::::::::::B l:::::l                     ttt:::t                          
 B::::::BBBBBB:::::Bl:::::l                     t:::::t                          
-BB:::::B     B:::::l:::::l                     t:::::t                          
+BB:::::B     B:::::l:::::l{6}               t:::::t                          
   B::::B     B:::::Bl::::luuuuuu    uuuuuttttttt:::::ttttttt      ooooooooooo   
   B::::B     B:::::Bl::::lu::::u    u::::t:::::::::::::::::t    oo:::::::::::oo 
   B::::BBBBBB:::::B l::::lu::::u    u::::t:::::::::::::::::t   o:::::::::::::::o
@@ -293,16 +300,18 @@ BB:::::B     B:::::l:::::l                     t:::::t
 BB:::::BBBBBB::::::l::::::u:::::::::::::::uu   t::::::tttt:::::o:::::ooooo:::::o
 B:::::::::::::::::Bl::::::lu:::::::::::::::u   tt::::::::::::::o:::::::::::::::o
 B::::::::::::::::B l::::::l uu::::::::uu:::u     tt:::::::::::ttoo:::::::::::oo 
-BBBBBBBBBBBBBBBBB  llllllll   uuuuuuuu  uuuu       ttttttttttt    ooooooooooo"""
-print """
+BBBBBBBBBBBBBBBBB  llllllll   uuuuuuuu  uuuu       ttttttttttt    ooooooooooo
+                                                                            
                 {2} | {3} | {4}
-               {0}  |  {1}
-                 {5}
-""" . format (colored("Author: Darryl Lane", 'blue'),colored("Twitter: @darryllane101", 'blue'),colored("DNS Recon", 'green'),colored("Brute forcer", 'green'),colored("DNS Zone Transfers", 'green'),colored("https://github.com/RandomStorm/Bluto", 'green'))
+                {0}  |  {1}
+                     {5}
+""" . format (colored("Author: Darryl Lane", 'blue'),colored("Twitter: @darryllane101", 'blue'),colored("DNS Recon", 'green'),colored("Brute forcer", 'green'),colored("DNS Zone Transfers", 'green'),colored("https://github.com/RandomStorm/Bluto", 'green'),colored("v" + version, 'red'))
 
 domain = raw_input("\nTarget Domain: ")
 path = str(site.getsitepackages()[0])
+
 filename1 = path + "/Bluto/doc/subdomains-top1mil-20000.txt"
+#filename1 = path + "/Bluto/doc/testing.txt"
 filename2 = path + "/Bluto/doc/sub_interest.txt"
 targets = []
 
@@ -325,9 +334,9 @@ if __name__ == "__main__":
         pool = ThreadPool(12)
         print """\tNote:\n                                                                        
         Bluto is attempting to brute force the target domain.
-        Newly found targets will be aded to the already identified
-        targets from Netcraft. They will be sorted for duplications
-        and printed back to the screen                                                                                     
+        Newly found sub-domains will be added to the already identified
+        list from NetCraft. They will be sorted for duplications
+        and printed back to the screen.                                                                                     
         """
         start_time = time.time()
         pool.map(get_brutes, subs)

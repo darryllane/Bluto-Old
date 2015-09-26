@@ -1,6 +1,7 @@
 LICENSE.txt
 MANIFEST.in
 setup.py
+Bluto/.DS_Store
 Bluto/__init__.py
 Bluto/bluto.py
 Bluto.egg-info/PKG-INFO
@@ -10,3 +11,4 @@ Bluto.egg-info/requires.txt
 Bluto.egg-info/top_level.txt
 Bluto/doc/sub_interest.txt
 Bluto/doc/subdomains-top1mil-20000.txt
+Bluto/doc/testing.txt
