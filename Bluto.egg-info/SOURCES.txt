@@ -1,5 +1,6 @@
 LICENSE.txt
 MANIFEST.in
+README.md
 setup.py
 Bluto/.DS_Store
 Bluto/__init__.py
