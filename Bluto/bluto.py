@@ -13,11 +13,11 @@ version = "1.1.5"
 def output_data(target_dict, sub_intrest):
     sorted_dict = collections.OrderedDict(sorted(target_dict.items()))
     print "Bluto Results: \n"
-    for item in target_dict:
+    for item in sorted_dict:
         if item in sub_intrest:
             print colored(item + "\t", 'red'), colored(sorted_dict[item], 'red')
         else:
-            print item + "\t",target_dict[item]
+            print item + "\t",sorted_dict[item]
 
     time_spent = time.time() - start_time
     print "\nRequests executed:", str(check_count) + " in " + str(datetime.timedelta(seconds=(time_spent))) + " seconds"
