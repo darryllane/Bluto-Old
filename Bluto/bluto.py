@@ -310,7 +310,7 @@ BBBBBBBBBBBBBBBBB  llllllll   uuuuuuuu  uuuu       ttttttttttt    ooooooooooo
 domain = raw_input("\nTarget Domain: ")
 path = str(site.getsitepackages()[0])
 
-filename1 = path + "/Bluto/doc/subdomains-top1mil-20000.txt"
+filename1 = path + "/Bluto/doc/masslist.txt"
 #filename1 = path + "/Bluto/doc/testing.txt"
 filename2 = path + "/Bluto/doc/sub_interest.txt"
 targets = []
@@ -338,7 +338,7 @@ if __name__ == "__main__":
         and printed back to the screen.                                                                                     
         """
         output = mp.Queue()
-        processes = [mp.Process(target=get_brutes, args=(subs,)) for x in range(4)]
+        processes = [mp.Process(target=get_brutes, args=(subs,)) for x in range(5)]
         start_time = time.time()
         for p in processes:
             p.start()
