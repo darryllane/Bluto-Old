@@ -7,7 +7,7 @@
 >https://github.com/RandomStorm/Bluto
 
 
-The target domain is queried for MX and NS records. Sub-domains are passively gathered via NetCraft. The target domain NS records are each queried for potential Zone Transfers. If none of them gives up their spinach, Bluto will brute force subdomains using parallel sub processing on the top 20000 of the 'The Alexa Top 1 Million subdomains'. NetCraft results are presented individually and are then compared to the brute force results, any duplications are removed and particularly interesting results are highlighted.
+The target domain is queried for MX and NS records. Sub-domains are passively gathered via NetCraft. The target domain NS records are each queried for potential Zone Transfers. If none of them gives up their spinach, Bluto will brute force subdomains using parallel sub processing on the top 200000 subdomains. Running on my MAC with an i5 core, I hit all 200000 subs in less than a second. The subdomain list `masslist.txt` is a combination of the 'Zone Transfers on The Alexa Top 1 Million' list from Ryan's blog <http://tinyurl.com/DewhurstSecurityBlog> and various other names gathered from the far corners of the Web. NetCraft results are presented individually and are then compared to the brute force results, any duplications are removed and particularly interesting results are highlighted.
          
 Bluto requires various other dependencies. So to make things as easy as possible, `pip` is used for the installation. This does mean you will need to have pip installed prior to attempting the Bluto install.
 
