@@ -1,6 +1,6 @@
 #!/usr/local/bin/python
 
-import multiprocessing as mp
+from multiprocessing.dummy import Pool as ThreadPool 
 import dns.resolver, dns.query, dns.zone
 import sys, time, datetime, socket, os, math
 from termcolor import colored
@@ -8,7 +8,7 @@ import requests, re, collections
 from bs4 import BeautifulSoup
 import urllib2, hashlib, json, site
 
-version = "1.1.6"
+version = "1.1.5"
 
 def output_data(target_dict, sub_intrest):
     sorted_dict = collections.OrderedDict(sorted(target_dict.items()))
@@ -310,7 +310,7 @@ BBBBBBBBBBBBBBBBB  llllllll   uuuuuuuu  uuuu       ttttttttttt    ooooooooooo
 domain = raw_input("\nTarget Domain: ")
 path = str(site.getsitepackages()[0])
 
-filename1 = path + "/Bluto/doc/masslist.txt"
+filename1 = path + "/Bluto/doc/subdomains-top1mil-20000.txt"
 #filename1 = path + "/Bluto/doc/testing.txt"
 filename2 = path + "/Bluto/doc/sub_interest.txt"
 targets = []
@@ -331,20 +331,17 @@ if __name__ == "__main__":
 #Bruting
         check_count = line_count(filename1)
         subs = get_subs(filename1)
+        pool = ThreadPool(12)
         print """\tNote:\n                                                                        
         Bluto is attempting to brute force the target domain.
         Newly found sub-domains will be added to the already identified
         list from NetCraft. They will be sorted for duplications
         and printed back to the screen.                                                                                     
         """
-        output = mp.Queue()
-        processes = [mp.Process(target=get_brutes, args=(subs,)) for x in range(5)]
         start_time = time.time()
-        for p in processes:
-            p.start()
-            
-        for p in processes:
-            p.join()        
+        pool.map(get_brutes, subs)
+        pool.close() 
+        pool.join()
         if targets == []:
             targets.append("temp-enter")
         
