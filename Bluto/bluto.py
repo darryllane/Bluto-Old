@@ -331,7 +331,6 @@ if __name__ == "__main__":
 #Bruting
         check_count = line_count(filename1)
         subs = get_subs(filename1)
-        pool = ThreadPool(12)
         print """\tNote:\n                                                                        
         Bluto is attempting to brute force the target domain.
         Newly found sub-domains will be added to the already identified
