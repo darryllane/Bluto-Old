@@ -1,6 +1,6 @@
 #!/usr/local/bin/python
 
-from multiprocessing.dummy import Pool as ThreadPool 
+import multiprocessing as mp
 import dns.resolver, dns.query, dns.zone
 import sys, time, datetime, socket, os, math
 from termcolor import colored
@@ -8,7 +8,7 @@ import requests, re, collections
 from bs4 import BeautifulSoup
 import urllib2, hashlib, json, site
 
-version = "1.1.5"
+version = "1.1.6"
 
 def output_data(target_dict, sub_intrest):
     sorted_dict = collections.OrderedDict(sorted(target_dict.items()))
@@ -338,10 +338,14 @@ if __name__ == "__main__":
         list from NetCraft. They will be sorted for duplications
         and printed back to the screen.                                                                                     
         """
+        output = mp.Queue()
+        processes = [mp.Process(target=get_brutes, args=(subs,)) for x in range(4)]
         start_time = time.time()
-        pool.map(get_brutes, subs)
-        pool.close() 
-        pool.join()
+        for p in processes:
+            p.start()
+            
+        for p in processes:
+            p.join()        
         if targets == []:
             targets.append("temp-enter")
         
