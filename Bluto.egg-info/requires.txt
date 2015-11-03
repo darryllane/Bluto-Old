@@ -1,3 +1,4 @@
 dnspython
 termcolor
 BeautifulSoup4
+requests

@@ -4,15 +4,25 @@ from multiprocessing.dummy import Pool as ThreadPool
 import dns.resolver, dns.query, dns.zone
 import sys, time, datetime, socket, os, math
 from termcolor import colored
-import requests, re, collections
+import requests, re, collections, threading, Queue
 from bs4 import BeautifulSoup
-import urllib2, hashlib, json, site
+import urllib2, hashlib, json, site, random
 
-version = "1.1.5"
 
+email_address = []
+
+version = "1.1.6"
 def output_data(target_dict, sub_intrest):
+    temp1 = [item.lower() for item in email_address]
+    new_list = sorted(set(temp1))    
+    print '\nEmails Gathered From Google and Bing:\n'
+    for item in new_list:
+        if item == '@' + domain or item == '@':
+            pass
+        else:
+            print item     
     sorted_dict = collections.OrderedDict(sorted(target_dict.items()))
-    print "Bluto Results: \n"
+    print "\nBluto Results: \n"
     for item in sorted_dict:
         if item in sub_intrest:
             print colored(item + "\t", 'red'), colored(sorted_dict[item], 'red')
@@ -74,7 +84,7 @@ def zone_trans(zn_list, domain):
                     pass
                 else:
                     print """An unexpected error has occured. Please report the error and it's context to https://github.com/RandomStorm/Bluto/issues, thank you."""
-                    print error
+                    print error + ': in "zone_trans"\n'
             print z[n].to_text(n)
 
         clean_dump = sorted(set(dump_list))
@@ -89,7 +99,6 @@ def zone_trans(zn_list, domain):
     
     
     return vulnerable_listT
-
 
 def get_details(domain):
     ns_list = []
@@ -156,7 +165,7 @@ def get_subs(filename):
     except Exception as e:
         error = str(e)
         print """An unexpected error has occured. Please report the error and it's context to https://github.com/RandomStorm/Bluto/issues, thank you."""
-        print error
+        print error + ': in "get_subs"\n'
         sys.exit()
         
     return full_list    
@@ -171,7 +180,7 @@ def get_sub_interest(filename):
     except Exception as e:
         error = str(e)
         print """An unexpected error has occured. Please report the error and it's context to https://github.com/RandomStorm/Bluto/issues, thank you."""
-        print error
+        print error + ': in "get_sub_interest"\n'
         sys.exit()
         
     return full_list
@@ -180,7 +189,11 @@ def get_sub_interest(filename):
 def get_netcraft(domain):
     netcraft_list = []
     print "\nPassive Gatherings From NetCraft\n"
-    res = NetcraftAPI({'verbose': True}).search(domain)
+    try:
+        res = NetcraftAPI({'verbose': True}).search(domain)
+    except Exception as e:
+        print e
+        sys.exit()
     
     for item in res:
         data1 = str(item + "." + domain)
@@ -198,8 +211,85 @@ def get_netcraft(domain):
     for item in netcraft_list:
             print colored(item, 'red')
             
-    return netcraft_list    
-        
+    return netcraft_list
+
+def LoadUserAgents(useragent_f):
+    uas = []
+    with open(useragent_f, 'rb') as uaf:
+        for ua in uaf.readlines():
+            if ua:
+                uas.append(ua.strip()[1:-1-1])
+    random.shuffle(uas)
+    return uas
+
+def googlesearch(domain):
+    i = 0
+    uas = LoadUserAgents(useragent_f)
+    searchfor = '@' + '"' + domain + '"'  
+    for start in range(0,50):
+        try:
+            ua = random.choice(uas)
+            if prox == True:
+                proxy = {'http' : 'http://127.0.0.1:8080'}
+            else:
+                pass            
+            headers = {"Connection" : "close", 
+                       "User-Agent" : ua, 
+                       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 
+                       'Accept-Language': 'en-US,en;q=0.5',
+                       'Accept-Encoding': 'gzip, deflate',
+                       'Referer': 'http://www.google.co.uk'}
+            payload = { 'nord':'1', 'q': searchfor, 'start': start*2}
+            link = 'http://www.google.com/search?num=100'
+            if prox == True:
+                response = requests.get(link, headers=headers, params=payload, proxies=proxy)
+            else:
+                response = requests.get(link, headers=headers, params=payload)            
+            if str(response.status_code) == '503':
+                if i == 0:
+                    print colored('Google is responding with a Captcha...try again shortly\n', 'red')
+                    print colored('Bing results will still follow\n','green')
+                    i += 1
+            reg_emails = re.compile('[a-zA-Z0-9.]*' + '@' + '<em>')        
+            temp = reg_emails.findall(response.text)
+            time.sleep(3)
+            for item in temp:
+                clean = item.replace("u'", "").replace('<em>','')
+                email_address.append(clean + domain)
+                            
+        except Exception as e:
+            continue
+
+def bingsearch(domain):
+    uas = LoadUserAgents(useragent_f)
+    searchfor = '@' + '"' + domain + '"'  
+    for start in range(0,200):
+        ua = random.choice(uas)
+        if prox == True:
+            proxy = {'http' : 'http://127.0.0.1:8080'}
+        else:
+            pass
+        try:
+            headers = {"Connection" : "close", 
+                       "User-Agent" : ua,
+                       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 
+                       'Accept-Language': 'en-US,en;q=0.5',
+                       'Accept-Encoding': 'gzip, deflate'}
+            payload = { 'q': searchfor, 'first': start}
+            link = 'http://www.bing.com/search'
+            if prox == True:
+                response = requests.get(link, headers=headers, params=payload, proxies=proxy)
+            else:
+                response = requests.get(link, headers=headers, params=payload)
+            reg_emails = re.compile('[a-zA-Z0-9.-]*' + '@' + '<strong>')
+            temp = reg_emails.findall(response.text)
+            time.sleep(1)
+            for item in temp:
+                clean = item.replace("<strong>", "")
+                email_address.append(clean + domain)              
+        except Exception as e:
+            continue         
+
 class NetcraftAPI(object):
     """
     This is the (unofficial) Python API for the netcraft.com Website.
@@ -288,7 +378,7 @@ print """
 BBBBBBBBBBBBBBBBB  lllllll                       tttt                          
 B::::::::::::::::B l:::::l                     ttt:::t                          
 B::::::BBBBBB:::::Bl:::::l                     t:::::t                          
-BB:::::B     B:::::l:::::l{6}               t:::::t                          
+BB:::::B     B:::::l:::::l{6}            t:::::t                          
   B::::B     B:::::Bl::::luuuuuu    uuuuuttttttt:::::ttttttt      ooooooooooo   
   B::::B     B:::::Bl::::lu::::u    u::::t:::::::::::::::::t    oo:::::::::::oo 
   B::::BBBBBB:::::B l::::lu::::u    u::::t:::::::::::::::::t   o:::::::::::::::o
@@ -302,17 +392,18 @@ B:::::::::::::::::Bl::::::lu:::::::::::::::u   tt::::::::::::::o:::::::::::::::o
 B::::::::::::::::B l::::::l uu::::::::uu:::u     tt:::::::::::ttoo:::::::::::oo 
 BBBBBBBBBBBBBBBBB  llllllll   uuuuuuuu  uuuu       ttttttttttt    ooooooooooo
                                                                             
-                {2} | {3} | {4}
-                {0}  |  {1}
-                     {5}
-""" . format (colored("Author: Darryl Lane", 'blue'),colored("Twitter: @darryllane101", 'blue'),colored("DNS Recon", 'green'),colored("Brute forcer", 'green'),colored("DNS Zone Transfers", 'green'),colored("https://github.com/RandomStorm/Bluto", 'green'),colored("v" + version, 'red'))
+     {2} | {3} | {4} | {7}
+            {0}  |  {1}
+                 {5}
+""" . format (colored("Author: Darryl Lane", 'blue'),colored("Twitter: @darryllane101", 'blue'),colored("DNS Recon", 'green'),colored("Brute Forcer", 'green'),colored("DNS Zone Transfers", 'green'),colored("https://github.com/RandomStorm/Bluto", 'green'),colored("v" + version, 'red'),(colored("Email Enumeration", 'green')))
 
 domain = raw_input("\nTarget Domain: ")
 path = str(site.getsitepackages()[0])
-
+prox = False
 filename1 = path + "/Bluto/doc/subdomains-top1mil-20000.txt"
-#filename1 = path + "/Bluto/doc/testing.txt"
+#filename1 = path + "/Bluto/doc/subdomains-top1mil.txt"
 filename2 = path + "/Bluto/doc/sub_interest.txt"
+useragent_f = path + "/Bluto/doc/user_agents.txt"
 targets = []
 
 myResolver = dns.resolver.Resolver()
@@ -327,21 +418,26 @@ if __name__ == "__main__":
 #ZoneTrans Call    
     vulnerable_list = zone_trans(zn_list, domain)
     if vulnerable_list == []:
-        print "\nNone of the Name Servers are vulnerable to Zone Transfers\n"
+        print "\nNone of the Name Servers are vulnerable to Zone Transfers"
 #Bruting
         check_count = line_count(filename1)
         subs = get_subs(filename1)
         pool = ThreadPool(12)
-        print """\tNote:\n                                                                        
-        Bluto is attempting to brute force the target domain.
-        Newly found sub-domains will be added to the already identified
-        list from NetCraft. They will be sorted for duplications
-        and printed back to the screen.                                                                                     
-        """
+        print """
+Brute Forcing Sub-Domains
+
+Note:                                                                        
+While you are waiting we will gather email addresses."""
+        t1 = threading.Thread(target=googlesearch, args=(domain,))
+        t1.start()
+        t2 = threading.Thread(target=bingsearch, args=(domain,))
+        t2.start()
+        t1.join()
+        t2.joi()
         start_time = time.time()
         pool.map(get_brutes, subs)
-        pool.close() 
-        pool.join()
+        pool.close()        
+
         if targets == []:
             targets.append("temp-enter")
         
@@ -349,6 +445,22 @@ if __name__ == "__main__":
         domains.sort()
         if "temp-enter" in domains: domains.remove("temp-enter")
         target_dict = dict((x.split(' ') for x in domains))
-#Outputing Brute data
+#Outputing data
         output_data(target_dict, sub_intrest)
+    else:
+        print '\nGathering Email Addresses From Google and Bing'
+        t1 = threading.Thread(target=googlesearch, args=(domain,))
+        t1.start()
+        t2 = threading.Thread(target=bingsearch, args=(domain,))
+        t2.start()
+        t1.join()
+        t2.join()
+        temp1 = [item.lower() for item in email_address]
+        new_list = sorted(set(temp1))
+        print '\nEmails Gathered From Google and Bing:\n'
+        for item in new_list:
+            if item == '@' + domain or item == '@':
+                pass
+            else:
+                print item         
         
