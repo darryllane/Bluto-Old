@@ -378,7 +378,7 @@ print """
 BBBBBBBBBBBBBBBBB  lllllll                       tttt                          
 B::::::::::::::::B l:::::l                     ttt:::t                          
 B::::::BBBBBB:::::Bl:::::l                     t:::::t                          
-BB:::::B     B:::::l:::::l{6}            t:::::t                          
+BB:::::B     B:::::l:::::l{6}               t:::::t                          
   B::::B     B:::::Bl::::luuuuuu    uuuuuttttttt:::::ttttttt      ooooooooooo   
   B::::B     B:::::Bl::::lu::::u    u::::t:::::::::::::::::t    oo:::::::::::oo 
   B::::BBBBBB:::::B l::::lu::::u    u::::t:::::::::::::::::t   o:::::::::::::::o
