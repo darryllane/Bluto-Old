@@ -272,7 +272,7 @@ def googlesearch(domain):
                     break
                 o =+ 1
                 print '\nUnable to connect to ID service, we will retry.\nThis is {} of 3 attempts' .format(o)
-                time.sleep(5)
+                time.sleep(2)
                 continue
             break
     try:
