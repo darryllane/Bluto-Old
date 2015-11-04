@@ -11,7 +11,7 @@ import urllib2, hashlib, json, site, random
 
 email_address = []
 path = str(site.getsitepackages()[0])
-prox = False
+prox = True
 version = "1.1.7"
 
 filename1 = path + "/Bluto/doc/subdomains-top1mil-20000.txt"
@@ -244,54 +244,67 @@ def googlesearch(domain):
     i = 0
     uas = LoadUserAgents(useragent_f)
     searchfor = '@' + '"' + domain + '"' 
-    for i in range(0,3):
-        o = 0
-        while True:
-            try:
+    o = 0
+    while True:
+        try:
+            if prox == True:
+                proxy = {'http' : 'http://127.0.0.1:8080'}
+                r = requests.get(r'http://www.telize.com/geoip/', proxies=proxy)
+                ip = r.json()['ip']
+                originCountry = r.json()['country'] 
+                
+            else:  
                 r = requests.get(r'http://www.telize.com/geoip/')
                 ip = r.json()['ip']
                 originCountry = r.json()['country']
-            except ValueError as e:
-                if o == 3:
-                    country_list = []
-                    print '\nWe have been unable to connect to the country ID service.\nPlease let Bluto know what country you hale from.\n'
-                    with open(countries_file) as fin:
-                        for line in fin:
-                            key, value = line.strip().split(';')
-                            countries_dic.update({key: value})
-                    for country, server in countries_dic.items():
-                        country_list.append(country)
-                    print 'Available Countries:\n'
-                    print country_list
-                    originCountry = raw_input('\nCountry: ')
-                    for country, server in countries_dic.items():
-                        if country == originCountry:
-                            userCountry = country
-                            userServer = server
-                            userID = True                        
-                    break
-                o =+ 1
-                print '\nUnable to connect to ID service, we will retry.\nThis is {} of 3 attempts' .format(o)
-                time.sleep(2)
-                continue
-            break
+                
+        except ValueError as e:
+            if o == 0:
+                print '\nUnable to connect to the CountryID, we will retry.'
+            if o > 0:
+                print '\nThis is {} of 3 attempts' .format(o)
+            time.sleep(2)
+            o += 1
+            if o == 3:
+                break
+            continue
+        break
+    if o == 3:
+        country_list = []
+        print '\nWe have been unable to connect to the CountryID service.\nPlease let Bluto know what country you hale from.\n'
+        with open(countries_file) as fin:
+            for line in fin:
+                key, value = line.strip().split(';')
+                countries_dic.update({key: value})
+        for country, server in countries_dic.items():
+            country_list.append(country)
+        print 'Available Countries:\n'
+        cols = 4
+        split=[country_list[i:i+len(country_list)/cols] for i in range(0,len(country_list),len(country_list)/cols)]
+        for row in zip(*split):
+            print "".join(str.ljust(i,20) for i in row)              
+        originCountry = raw_input('\nCountry: ')
+        for country, server in countries_dic.items():
+            if country == originCountry:
+                userCountry = country
+                userServer = server
+                userID = True                        
     try:
         with open(countries_file) as fin:
             for line in fin:
                 key, value = line.strip().split(';')
-                countries_dic.update({key: value})  
-        for country, server in countries_dic.items():
-            if country == originCountry:
-                userIP = ip
-                userCountry = country
-                userServer = server
-                userID = True      
-        if userID == False:
-            print 'Bluto currently doesn\'t have your countries google server available.\nPlease navigate to "http://www.telize.com/geoip/" and post an issue to "https://github.com/RandomStorm/Bluto/issues" including the country value as shown in the json output\nYou have been assigned to http://www.google.com for now'
-        else:
-            print '\nYour country is {0}, you will be using {1} for yourGoogle searches.' .format(userCountry, userServer)
+                countries_dic.update({key: value}) 
     except Exception as e:
-        error =  str(e)
+        error =  str(e)    
+    for country, server in countries_dic.items():
+        if country == originCountry:
+            userCountry = country
+            userServer = server
+            userID = True      
+    if userID == False:
+        print 'Bluto currently doesn\'t have your countries google server available.\nPlease navigate to "http://www.telize.com/geoip/" and post an issue to "https://github.com/RandomStorm/Bluto/issues" including the country value as shown in the json output\nYou have been assigned to http://www.google.com for now'
+    else:
+        print '\nYour country is {0}, you will be using {1} for your Google searches.' .format(userCountry, userServer)
       
     for start in range(0,50):
         try:
