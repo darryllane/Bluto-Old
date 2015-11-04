@@ -29,7 +29,7 @@ Note: To test if pip is already installed execute.
 
 `sudo pip install git+git://github.com/RandomStorm/Bluto`
 
-(2) You should now be able to execute 'bluto.py' from any working directory in any terminal.
+(2) You should now be able to execute 'bluto' from any working directory in any terminal.
  
 `bluto`
 
