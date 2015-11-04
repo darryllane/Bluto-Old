@@ -1,6 +1,6 @@
 **BLUTO**
 -----
-**DNS recon | Brute forcer | DNS Zone Transfer**
+**DNS recon | Brute forcer | DNS Zone Transfer | Email Enumeration**
  
 >Author: Darryl Lane  |  Twitter: @darryllane101
 
