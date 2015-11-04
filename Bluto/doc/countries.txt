@@ -1,0 +1,153 @@
+United Arab Emirates;http://www.google.ae
+Afghanistan;http://www.google.com.af
+Antigua and Barbuda;http://www.google.com.ag
+Anguilla;http://www.google.off.ai
+Armenia;http://www.google.am
+Argentina;http://www.google.com.ar
+American Samoa;http://www.google.as
+Austria;http://www.google.at
+Australia;http://www.google.com.au
+Azerbaijan;http://www.google.az
+Bosnia and Herzegovina;http://www.google.ba
+Bangladesh;http://www.google.com.bd
+Belgium;http://www.google.be
+Bulgaria;http://www.google.bg
+Bahrain;http://www.google.com.bh
+Burundi;http://www.google.bi
+Bolivia;http://www.google.com.bo
+Brazil;http://www.google.com.br
+Bahamas;http://www.google.bs
+Botswana;http://www.google.co.bw
+Belize;http://www.google.com.bz
+Canada;http://www.google.ca
+Dominican Republic;http://www.google.cd
+Congo;http://www.google.cg
+Congo, The Democratic Republic of the;http://www.google.cg
+Switzerland;http://www.google.ch
+Cote D'Ivoire;http://www.google.ci
+Cook Islands;http://www.google.co.ck
+Chile;http://www.google.cl
+China;http://www.google.cn
+Colombia;http://www.google.com.co
+Costa Rica;http://www.google.co.cr
+Cuba;http://www.google.com.cu
+Czech Republic;http://www.google.cz
+Germany;http://www.google.de
+Djibouti;http://www.google.dj
+Denmark;http://www.google.dk
+Dominica;http://www.google.dm
+Dominican Republic;http://www.google.com.do
+Ecuador;http://www.google.com.ec
+Estonia;http://www.google.ee
+Egypt;http://www.google.com.eg
+Spain;http://www.google.es
+Ethiopia;http://www.google.com.et
+Finland;http://www.google.fi
+Fiji;http://www.google.com.fj
+Micronesia, Federated States of;http://www.google.fm
+Micronesia;http://www.google.fm
+France;http://www.google.fr
+Georgia;http://www.google.ge
+Guernsey;http://www.google.gg
+Gibraltar;http://www.google.com.gi
+Greenland;http://www.google.gl
+Gambia;http://www.google.gm
+Greece;http://www.google.gr
+Guatemala;http://www.google.com.gt
+Guyana;http://www.google.gy
+Hong Kong;http://www.google.com.hk
+Honduras;http://www.google.hn
+Croatia;http://www.google.hr
+Haiti;http://www.google.ht
+Hungary;http://www.google.hu
+Indonesia;http://www.google.co.id
+Ireland;http://www.google.ie
+Israel;http://www.google.co.il
+Isle of Man;http://www.google.co.im
+India;http://www.google.co.in
+Iceland;http://www.google.is
+Italy;http://www.google.it
+Jersey;http://www.google.co.je
+Jamaica;http://www.google.com.jm
+Jordan;http://www.google.jo
+Japan;http://www.google.co.jp
+Kenya;http://www.google.co.ke
+Kyrgyzstan;http://www.google.kg
+Korea;http://www.google.co.kr
+Kazakhstan;http://www.google.kz
+Liechtenstein;http://www.google.li
+Sri Lanka;http://www.google.lk
+Lesotho;http://www.google.co.ls
+Lithuania;http://www.google.lt
+Luxembourg;http://www.google.lu
+Latvia;http://www.google.lv
+Libya;http://www.google.com.ly
+Morocco;http://www.google.co.ma
+Moldova;http://www.google.md
+Moldova, Republic of;http://www.google.md
+Mongolia;http://www.google.mn
+Montserrat;http://www.google.ms
+Malta;http://www.google.com.mt
+Mauritius;http://www.google.mu
+Malawi;http://www.google.mw
+Mexico;http://www.google.com.mx
+Malaysia;http://www.google.com.my
+Namibia;http://www.google.com.na
+Norfolk Island;http://www.google.com.nf
+Nigeria;http://www.google.com.ng
+Nicaragua;http://www.google.com.ni
+Netherlands;http://www.google.nl
+Norway;http://www.google.no
+Nepal;http://www.google.com.np
+Nauru;http://www.google.nr
+Niue;http://www.google.nu
+New Zealand;http://www.google.co.nz
+Oman;http://www.google.com.om
+Panama;http://www.google.com.pa
+Peru;http://www.google.com.pe
+Philippines;http://www.google.com.ph
+Pakistan;http://www.google.com.pk
+Poland;http://www.google.pl
+Pitcairn Islands;http://www.google.pn
+Puerto Rico;http://www.google.com.pr
+Portugal;http://www.google.pt
+Paraguay;http://www.google.com.py
+Qatar;http://www.google.com.qa
+Romania;http://www.google.ro
+Russian Federation;http://www.google.ru
+Rwanda;http://www.google.rw
+Saudi Arabia;http://www.google.com.sa
+Solomon Islands;http://www.google.com.sb
+Seychelles;http://www.google.sc
+Sweden;http://www.google.se
+Singapore;http://www.google.com.sg
+Saint Helena;http://www.google.sh
+Slovenia;http://www.google.si
+Slovakia;http://www.google.sk
+Senegal;http://www.google.sn
+San Marino;http://www.google.sm
+El Salvador;http://www.google.com.sv
+Thailand;http://www.google.co.th
+Tajikistan;http://www.google.com.tj
+Turkmenistan;http://www.google.tm
+Tonga;http://www.google.to
+Turkey;http://www.google.com.tr
+Trinidad and Tobago;http://www.google.tt
+Taiwan;http://www.google.com.tw
+Ukraine;http://www.google.com.ua
+Uganda;http://www.google.co.ug
+United Kingdom;http://www.google.co.uk
+Uruguay;http://www.google.com.uy
+Uzbekistan;http://www.google.co.uz
+Saint Vincent and the Grenadines;http://www.google.com.vc
+Venezuela;http://www.google.co.ve
+Virgin Islands, British;http://www.google.vg
+British Virgin Islands;http://www.google.vg
+Virgin Islands, U.S.;http://www.google.co.vi
+Virgin Islands;http://www.google.co.vi
+Vietnam;http://www.google.com.vn
+Vanuatu;http://www.google.vu
+Samoa;http://www.google.ws
+South Africa;http://www.google.co.za
+Zambia;http://www.google.co.zm
+United States;http://www.google.com
