@@ -243,11 +243,39 @@ def googlesearch(domain):
     userID = False
     i = 0
     uas = LoadUserAgents(useragent_f)
-    searchfor = '@' + '"' + domain + '"'    
+    searchfor = '@' + '"' + domain + '"' 
+    for i in range(0,3):
+        o = 0
+        while True:
+            try:
+                r = requests.get(r'http://www.telize.com/geoip/')
+                ip = r.json()['ip']
+                originCountry = r.json()['country']
+            except ValueError as e:
+                if o == 3:
+                    country_list = []
+                    print '\nWe have been unable to connect to the country ID service.\nPlease let Bluto know what country you hale from.\n'
+                    with open(countries_file) as fin:
+                        for line in fin:
+                            key, value = line.strip().split(';')
+                            countries_dic.update({key: value})
+                    for country, server in countries_dic.items():
+                        country_list.append(country)
+                    print 'Available Countries:\n'
+                    print country_list
+                    originCountry = raw_input('\nCountry: ')
+                    for country, server in countries_dic.items():
+                        if country == originCountry:
+                            userCountry = country
+                            userServer = server
+                            userID = True                        
+                    break
+                o =+ 1
+                print '\nUnable to connect to ID service, we will retry.\nThis is {} of 3 attempts' .format(o)
+                time.sleep(5)
+                continue
+            break
     try:
-        r = requests.get(r'http://www.telize.com/geoip/')
-        ip = r.json()['ip']
-        originCountry = r.json()['country']
         with open(countries_file) as fin:
             for line in fin:
                 key, value = line.strip().split(';')
@@ -257,11 +285,13 @@ def googlesearch(domain):
                 userIP = ip
                 userCountry = country
                 userServer = server
-                userID = True
+                userID = True      
         if userID == False:
-            print 'Bluto currently doesn\'t have your countries google server available.\nPlease navigate to "https://wtfismyip.com/json" and post an issue to "https://github.com/RandomStorm/Bluto/issues" including the country value as shown in the json output'
+            print 'Bluto currently doesn\'t have your countries google server available.\nPlease navigate to "http://www.telize.com/geoip/" and post an issue to "https://github.com/RandomStorm/Bluto/issues" including the country value as shown in the json output\nYou have been assigned to http://www.google.com for now'
+        else:
+            print '\nYour country is {0}, you will be using {1} for your\nGoogle searches.' .format(userCountry, userServer)
     except Exception as e:
-        print e
+        error =  str(e)
       
     for start in range(0,50):
         try:
