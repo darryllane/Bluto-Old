@@ -12,7 +12,7 @@ import urllib2, hashlib, json, site, random
 email_address = []
 path = str(site.getsitepackages()[0])
 prox = True
-version = "1.1.7"
+version = "1.1.8"
 
 filename1 = path + "/Bluto/doc/subdomains-top1mil-20000.txt"
 #filename1 = path + "/Bluto/doc/subdomains-top1mil.txt"
