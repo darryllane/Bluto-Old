@@ -289,7 +289,7 @@ def googlesearch(domain):
         if userID == False:
             print 'Bluto currently doesn\'t have your countries google server available.\nPlease navigate to "http://www.telize.com/geoip/" and post an issue to "https://github.com/RandomStorm/Bluto/issues" including the country value as shown in the json output\nYou have been assigned to http://www.google.com for now'
         else:
-            print '\nYour country is {0}, you will be using {1} for your\nGoogle searches.' .format(userCountry, userServer)
+            print '\nYour country is {0}, you will be using {1} for yourGoogle searches.' .format(userCountry, userServer)
     except Exception as e:
         error =  str(e)
       
