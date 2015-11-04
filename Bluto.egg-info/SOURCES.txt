@@ -11,6 +11,7 @@ Bluto.egg-info/dependency_links.txt
 Bluto.egg-info/requires.txt
 Bluto.egg-info/top_level.txt
 Bluto/doc/.DS_Store
+Bluto/doc/countries.txt
 Bluto/doc/sub_interest.txt
 Bluto/doc/subdomains-top1mil-20000.txt
 Bluto/doc/user_agents.txt
