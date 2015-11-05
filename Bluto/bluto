@@ -11,12 +11,12 @@ import urllib2, hashlib, json, site, random
 email_address = []
 targets = []
 path = str(site.getsitepackages()[0])
-prox = False
+prox = True
 default_s = False
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
 
-version = "1.1.8"
+version = "1.1.9"
 
 filename1 = path + "/Bluto/doc/subdomains-top1mil-20000.txt"
 #filename1 = path + "/Bluto/doc/subdomains-top1mil.txt"
@@ -234,15 +234,13 @@ def LoadUserAgents(useragent_f):
     random.shuffle(uas)
     return uas
 
-def googlesearch(domain):
+def get_gserver():
     countries_dic = {}
     userCountry = ''
     userServer = ''
     userIP = ''
     userID = False
     i = 0
-    uas = LoadUserAgents(useragent_f)
-    searchfor = '@' + '"' + domain + '"' 
     o = 0
     while True:
         try:
@@ -264,11 +262,11 @@ def googlesearch(domain):
                 print '\nThis is {} of 3 attempts' .format(o)
             time.sleep(2)
             o += 1
-            if o == 3:
+            if o == 4:
                 break
             continue
         break
-    if o == 3:
+    if o == 4:
         country_list = []
         print colored('\nWe have been unable to connect to the CountryID service.\n','red')
         print '\nPlease let Bluto know what country you hale from.\n'
@@ -279,17 +277,19 @@ def googlesearch(domain):
         for country, server in countries_dic.items():
             country_list.append(country)
         
+        country_list.sort()
         print colored('Available Countries:\n', 'green')
         
         if len(country_list) % 2 != 0:
             country_list.append(" ")
         
         split = len(country_list)/2
-        l1 = set(country_list[0:split])
-        l2 = set(country_list[split:])
+        l1 = country_list[0:split]
+        l2 = country_list[split:]
         
         for key, value in zip(l1,l2):
-            print "{0:<20s} {1}".format(key, value)                      
+            print "{0:<20s} {1}".format(key, value)
+            
         originCountry = raw_input('\nCountry: ')
         
         if originCountry == '':
@@ -322,9 +322,14 @@ def googlesearch(domain):
             else:
                 print 'Bluto currently doesn\'t have your countries google server available.\nPlease navigate to "http://www.telize.com/geoip/" and post an issue to "https://github.com/RandomStorm/Bluto/issues"\nincluding the country value as shown in the json output\nYou have been assigned to http://www.google.com for now.'
                 userServer = 'http://www.google.co.uk'
+                userCountry = 'United Kingdom'
     
-    print '\nYour country is {0}, you will be using {1} for your Google searches.' .format(userCountry, userServer)
-      
+    print '\nSearching From: {0}\nGoogle Server: {1}.' .format(userCountry, userServer)
+    return (userCountry, userServer)
+
+def googlesearch(domain, userCountry, userServer):
+    uas = LoadUserAgents(useragent_f)
+    searchfor = '@' + '"' + domain + '"'     
     for start in range(0,50):
         try:
             ua = random.choice(uas)
@@ -519,7 +524,8 @@ Brute Forcing Sub-Domains
 
 Note:                                                                        
 While you are waiting we will gather email addresses."""
-        t1 = threading.Thread(target=googlesearch, args=(domain,))
+        userCountry, userServer = get_gserver()
+        t1 = threading.Thread(target=googlesearch, args=(domain,userCountry, userServer,))
         t1.start()
         t2 = threading.Thread(target=bingsearch, args=(domain,))
         t2.start()
