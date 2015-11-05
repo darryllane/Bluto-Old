@@ -11,7 +11,7 @@ import urllib2, hashlib, json, site, random
 email_address = []
 targets = []
 path = str(site.getsitepackages()[0])
-prox = False
+prox = True
 default_s = False
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
@@ -235,13 +235,27 @@ def LoadUserAgents(useragent_f):
     return uas
 
 def get_gserver():
-    tcountries_dic = {}
     userCountry = ''
     userServer = ''
     userIP = ''
     userID = False
-    i = 0
-    o = 0
+    o = 0    
+    tcountries_dic = {}
+    country_list = []
+    
+    with open(countries_file) as fin:
+        for line in fin:
+            key, value = line.strip().split(';')
+            tcountries_dic.update({key: value})
+    
+    countries_dic = dict((k.lower(), v.lower()) for k,v in tcountries_dic.iteritems())
+
+    for country, server in countries_dic.items():
+        country_list.append(country)
+    
+    country_list = [item.capitalize() for item in country_list]
+    country_list.sort()
+    
     while True:
         try:
             if prox == True:
@@ -266,21 +280,10 @@ def get_gserver():
                 break
             continue
         break
+ 
     if o == 4:
-        country_list = []
         print colored('\nWe have been unable to connect to the CountryID service.\n','red')
         print '\nPlease let Bluto know what country you hale from.\n'
-        with open(countries_file) as fin:
-            for line in fin:
-                key, value = line.strip().split(';')
-                tcountries_dic.update({key: value})
-                
-        countries_dic = dict((k.lower(), v.lower()) for k,v in tcountries_dic.iteritems())
-        
-        for country, server in countries_dic.items():
-            country_list.append(country)
-        country_list = [item.capitalize() for item in country_list]
-        country_list.sort()
         print colored('Available Countries:\n', 'green')
         
         if len(country_list) % 2 != 0:
@@ -292,7 +295,6 @@ def get_gserver():
         
         for key, value in zip(l1,l2):
             print "{0:<20s} {1}".format(key, value)
-        
         
         country_list = [item.lower() for item in country_list]
         
@@ -314,16 +316,9 @@ def get_gserver():
                 userID = True
             
     else:                                   
-        try:
-            with open(countries_file) as fin:
-                for line in fin:
-                    key, value = line.strip().split(';')
-                    countries_dic.update({key: value}) 
-        except Exception as e:
-            error =  str(e)    
             
         for country, server in countries_dic.items():
-            if country == originCountry:
+            if country == originCountry.lower():
                 userCountry = country
                 userServer = server
                 userID = True      
@@ -340,6 +335,7 @@ def get_gserver():
     return (userCountry, userServer)
 
 def googlesearch(domain, userCountry, userServer):
+    i = 0
     uas = LoadUserAgents(useragent_f)
     searchfor = '@' + '"' + domain + '"'     
     for start in range(0,50):
