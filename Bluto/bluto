@@ -11,7 +11,7 @@ import urllib2, hashlib, json, site, random
 email_address = []
 targets = []
 path = str(site.getsitepackages()[0])
-prox = True
+prox = False
 default_s = False
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
@@ -235,7 +235,7 @@ def LoadUserAgents(useragent_f):
     return uas
 
 def get_gserver():
-    countries_dic = {}
+    tcountries_dic = {}
     userCountry = ''
     userServer = ''
     userIP = ''
@@ -273,10 +273,13 @@ def get_gserver():
         with open(countries_file) as fin:
             for line in fin:
                 key, value = line.strip().split(';')
-                countries_dic.update({key: value})
+                tcountries_dic.update({key: value})
+                
+        countries_dic = dict((k.lower(), v.lower()) for k,v in tcountries_dic.iteritems())
+        
         for country, server in countries_dic.items():
             country_list.append(country)
-        
+        country_list = [item.capitalize() for item in country_list]
         country_list.sort()
         print colored('Available Countries:\n', 'green')
         
@@ -289,18 +292,27 @@ def get_gserver():
         
         for key, value in zip(l1,l2):
             print "{0:<20s} {1}".format(key, value)
-            
-        originCountry = raw_input('\nCountry: ')
         
-        if originCountry == '':
-            print '\nYou have not selected a country so the default server will be used'
-            originCountry = 'United Kingdom'
-            default_s = True
+        
+        country_list = [item.lower() for item in country_list]
+        
+        while True:
+            originCountry = raw_input('\nCountry: ').lower()
+            if originCountry in country_list:
+                break
+            if originCountry == '':
+                print '\nYou have not selected a country so the default server will be used'
+                originCountry = 'United Kingdom'.lower()
+                break
+            else:
+                print '\nCheck your spelling and try again'
+                
         for country, server in countries_dic.items():
             if country == originCountry:
                 userCountry = country
                 userServer = server
-                userID = True 
+                userID = True
+            
     else:                                   
         try:
             with open(countries_file) as fin:
@@ -324,7 +336,7 @@ def get_gserver():
                 userServer = 'http://www.google.co.uk'
                 userCountry = 'United Kingdom'
     
-    print '\nSearching From: {0}\nGoogle Server: {1}.' .format(userCountry, userServer)
+    print '\nSearching From: {0}\nGoogle Server: {1}.' .format(userCountry.capitalize(), userServer)
     return (userCountry, userServer)
 
 def googlesearch(domain, userCountry, userServer):
