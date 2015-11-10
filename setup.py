@@ -11,7 +11,7 @@ setup(
     license='LICENSE.txt',
     description='DNS recon, brutfocing, DNS transfers, Email Enumeration.',
     long_description=open('README.md').read(),
-    scripts=['Bluto/bluto', 'Bluto/module_locator.py'],
+    scripts=['Bluto/bluto'],
     install_requires=[
         "dnspython",
         "termcolor",
