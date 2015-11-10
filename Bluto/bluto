@@ -8,21 +8,22 @@ import requests, re, collections, threading, Queue
 from bs4 import BeautifulSoup
 import urllib2, hashlib, json, site, random, string
 
+import module_locator
+path = module_locator.module_path()
 email_address = []
 targets = []
-path = str(site.getsitepackages()[0])
-prox = False
+prox = True
 default_s = False
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
 
 version = "1.1.10"
 
-filename1 = path + "/Bluto/doc/subdomains-top1mil-20000.txt"
+filename1 = path + "/doc/subdomains-top1mil-20000.txt"
 #filename1 = path + "/Bluto/doc/subdomains-top1mil.txt"
-filename2 = path + "/Bluto/doc/sub_interest.txt"
-useragent_f = path + "/Bluto/doc/user_agents.txt"
-countries_file = path + "/Bluto/doc/countries.txt"
+filename2 = path + "/doc/sub_interest.txt"
+useragent_f = path + "/doc/user_agents.txt"
+countries_file = path + "/doc/countries.txt"
 
 def output_data(target_dict, sub_intrest):
     temp1 = [item.lower() for item in email_address]
