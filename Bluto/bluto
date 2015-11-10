@@ -17,7 +17,7 @@ default_s = False
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
 
-version = "1.1.10"
+version = "1.1.11"
 
 filename1 = path + "/doc/subdomains-top1mil-20000.txt"
 #filename1 = path + "/Bluto/doc/subdomains-top1mil.txt"
