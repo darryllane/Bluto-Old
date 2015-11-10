@@ -349,7 +349,7 @@ def get_gserver():
                 userServer = 'http://www.google.co.uk'
                 userCountry = 'United Kingdom'
     
-    print '\nSearching From: {0}\nGoogle Server: {1}' .format(userCountry.capitalize(), userServer)
+    print '\nSearching From: {0}\nGoogle Server: {1}\n' .format(userCountry.capitalize(), userServer)
     return (userCountry, userServer)
 
 def googlesearch(domain, userCountry, userServer):
