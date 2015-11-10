@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='Bluto',
-    version='1.1.10',
+    version='1.1.11',
     author='Darryl lane',
     author_email='DarrylLane101@gmail.com',
     url='https://github.com/RandomStorm/Bluto',
@@ -11,7 +11,7 @@ setup(
     license='LICENSE.txt',
     description='DNS recon, brutfocing, DNS transfers, Email Enumeration.',
     long_description=open('README.md').read(),
-    scripts=['Bluto/bluto'],
+    scripts=['Bluto/bluto', 'Bluto/module_locator.py'],
     install_requires=[
         "dnspython",
         "termcolor",
