@@ -5,8 +5,6 @@ setup.py
 Bluto/.DS_Store
 Bluto/__init__.py
 Bluto/bluto
-Bluto/module_locator.py
-Bluto/module_locator.pyc
 Bluto.egg-info/PKG-INFO
 Bluto.egg-info/SOURCES.txt
 Bluto.egg-info/dependency_links.txt
