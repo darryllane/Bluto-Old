@@ -1,1 +1,2 @@
 from NetcraftAPI import NetcraftAPI
+import module_locator
