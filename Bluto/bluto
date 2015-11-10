@@ -8,9 +8,6 @@ import requests, re, collections, threading, Queue
 from bs4 import BeautifulSoup
 import urllib2, hashlib, json, site, random, string
 
-import module_locator
-path = module_locator.module_path()
-
 email_address = []
 targets = []
 prox = True
