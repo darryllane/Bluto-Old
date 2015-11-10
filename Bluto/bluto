@@ -11,7 +11,7 @@ import urllib2, hashlib, json, site, random, string
 email_address = []
 targets = []
 path = str(site.getsitepackages()[0])
-prox = True
+prox = False
 default_s = False
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
