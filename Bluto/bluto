@@ -39,7 +39,7 @@ def output_data(target_dict, sub_intrest):
     new_list = sorted(set(temp1))    
     temp = 0
     for item in new_list:
-        if item == '@' + domain or item == '@':
+        if item == '@' + domain or item == '@' or item == 'en..':
             pass
         else:
             temp += 1
@@ -417,7 +417,7 @@ def bingsearch(domain):
                 response = requests.get(link, headers=headers, params=payload)
             reg_emails = re.compile('[a-zA-Z0-9.-]*' + '@' + '<strong>')
             temp = reg_emails.findall(response.text)
-            time.sleep(0.5)
+            time.sleep(1)
             for item in temp:
                 clean = item.replace("<strong>", "")
                 email_address.append(clean + domain)              
