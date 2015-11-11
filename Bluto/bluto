@@ -7,7 +7,6 @@ from termcolor import colored
 import requests, re, collections, threading, Queue
 from bs4 import BeautifulSoup
 import urllib2, hashlib, json, site, random, string
-from progressbar import *
 
 email_address = []
 targets = []
@@ -605,18 +604,20 @@ Brute Forcing Sub-Domains
             domains.sort()
             if "temp-enter" in domains: domains.remove("temp-enter")
             target_dict = dict((x.split(' ') for x in domains))
-    #Outputing data
+#Outputing data
             output_data(target_dict, sub_intrest)
     else:
+#Vuln Zone Trans
         print '\nGathering Email Addresses From Google and Bing'
-        t1 = threading.Thread(target=googlesearch, args=(domain,))
+        userCountry, userServer = get_gserver()
+        start_time_email = time.time()
+        t1 = threading.Thread(target=googlesearch, args=(domain, userCountry, userServer,))
         t1.start()
         t2 = threading.Thread(target=bingsearch, args=(domain,))
         t2.start()
         t1.join()
         t2.join()
         time_spent_email = time.time() - start_time_email
-        print time_spent_email
         temp1 = [item.lower() for item in email_address]
         new_list = sorted(set(temp1))
         print '\nEmails Gathered From Google and Bing:\n'
@@ -630,5 +631,4 @@ Brute Forcing Sub-Domains
         
         print '\nPotential Emails Found: {}' .format(str(temp))        
         print "\nEmail Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"
-        print "Requests executed:", str(check_count) + " in " + str(datetime.timedelta(seconds=(time_spent_brute))) + " seconds"
-        print "Total Time:", str(datetime.timedelta(seconds=(time_spent_total))) + " seconds""\n"           
+                  
