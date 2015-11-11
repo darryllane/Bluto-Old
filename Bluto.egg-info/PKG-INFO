@@ -1,6 +1,10 @@
 Metadata-Version: 1.0
 Name: Bluto
+<<<<<<< HEAD
 Version: 1.1.9
+=======
+Version: 1.1.11
+>>>>>>> blutodev
 Summary: DNS recon, brutfocing, DNS transfers, Email Enumeration.
 Home-page: https://github.com/RandomStorm/Bluto
 Author: Darryl lane

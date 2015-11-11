@@ -6,17 +6,22 @@ import sys, time, datetime, socket, os, math
 from termcolor import colored
 import requests, re, collections, threading, Queue
 from bs4 import BeautifulSoup
-import urllib2, hashlib, json, site, random
+import urllib2, hashlib, json, site, random, string
 
 email_address = []
 targets = []
-path = str(site.getsitepackages()[0])
 prox = False
 default_s = False
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
+version = "1.1.11"
 
-version = "1.1.9"
+sites = site.getsitepackages()
+for item in sites:
+    if os.path.exists(item + "/Bluto/doc/subdomains-top1mil-20000.txt"):
+        path = item
+    else:
+        pass
 
 filename1 = path + "/Bluto/doc/subdomains-top1mil-20000.txt"
 #filename1 = path + "/Bluto/doc/subdomains-top1mil.txt"
@@ -24,15 +29,22 @@ filename2 = path + "/Bluto/doc/sub_interest.txt"
 useragent_f = path + "/Bluto/doc/user_agents.txt"
 countries_file = path + "/Bluto/doc/countries.txt"
 
+def time_cal(timespent):
+    hours, remainder = divmod(time_spent_email, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return (hours, minutes, seconds)
+
 def output_data(target_dict, sub_intrest):
     temp1 = [item.lower() for item in email_address]
     new_list = sorted(set(temp1))    
-    print '\nEmails Gathered From Google and Bing:\n'
+    temp = 0
     for item in new_list:
-        if item == '@' + domain or item == '@':
+        if item == '@' + domain or item == '@' or item == 'en..':
             pass
         else:
-            print item     
+            temp += 1
+            print item
+    print '\nPotential Emails Found: {}' .format(str(temp))    
     sorted_dict = collections.OrderedDict(sorted(target_dict.items()))
     print "\nBluto Results: \n"
     for item in sorted_dict:
@@ -41,8 +53,10 @@ def output_data(target_dict, sub_intrest):
         else:
             print item + "\t",sorted_dict[item]
 
-    time_spent = time.time() - start_time
-    print "\nRequests executed:", str(check_count) + " in " + str(datetime.timedelta(seconds=(time_spent))) + " seconds"
+           
+    print "\nEmail Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"
+    print "Requests executed:", str(check_count) + " in " + str(datetime.timedelta(seconds=(time_spent_brute))) + " seconds"
+    print "Total Time:", str(datetime.timedelta(seconds=(time_spent_total))) + " seconds""\n"
                 
 def zone_trans(zn_list, domain):
     print "\nAttempting Zone Transfers"
@@ -149,8 +163,7 @@ def get_details(domain):
     except:
         e = str(sys.exc_info()[0])
         print "\tNo Mail Servers"   
-       
-        
+             
     return zn_list
 
 def line_count(filename):
@@ -159,8 +172,18 @@ def line_count(filename):
         lines += 1
     return lines
 
-def get_brutes(subdomain):
+def wildCards(domain):
     try:
+        one = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(15))
+        myAnswers = myResolver.query(str(one) + '.' + str(domain))
+    
+    except dns.resolver.NXDOMAIN:
+        return False
+    else:
+        return True    
+
+def get_brutes(subdomain):
+    try:   
         myAnswers = myResolver.query(subdomain)
         for data in myAnswers:
             targets.append(subdomain + ' ' + str(data))
@@ -331,13 +354,12 @@ def get_gserver():
                 userServer = 'http://www.google.co.uk'
                 userCountry = 'United Kingdom'
     
-    print '\nSearching From: {0}\nGoogle Server: {1}.' .format(userCountry.capitalize(), userServer)
+    print '\nSearching From: {0}\nGoogle Server: {1}\n' .format(userCountry.capitalize(), userServer)
     return (userCountry, userServer)
 
 def googlesearch(domain, userCountry, userServer):
-    i = 0
     uas = LoadUserAgents(useragent_f)
-    searchfor = '@' + '"' + domain + '"'     
+    searchfor = '@' + '"' + domain + '"'
     for start in range(0,50):
         try:
             ua = random.choice(uas)
@@ -359,10 +381,9 @@ def googlesearch(domain, userCountry, userServer):
             else:
                 response = requests.get(link, headers=headers, params=payload)            
             if str(response.status_code) == '503':
-                if i == 0:
-                    print colored('Google is responding with a Captcha...try again shortly\n\n', 'red')
-                    print colored('Bing results will still follow\n','green')
-                    i += 1
+                print colored('Google is responding with a Captcha...try again shortly\n', 'red')
+                print colored('Bing results will still follow\n','green')
+                break
             reg_emails = re.compile('[a-zA-Z0-9.]*' + '@' + '<em>')        
             temp = reg_emails.findall(response.text)
             time.sleep(3)
@@ -371,12 +392,11 @@ def googlesearch(domain, userCountry, userServer):
                 email_address.append(clean + domain)
                             
         except Exception as e:
-            print e
             continue
 
-def bingsearch(domain):
+def bingsearch(domain):       
     uas = LoadUserAgents(useragent_f)
-    searchfor = '@' + '"' + domain + '"'  
+    searchfor = '@' + '"' + domain + '"'    
     for start in range(0,200):
         ua = random.choice(uas)
         if prox == True:
@@ -402,7 +422,8 @@ def bingsearch(domain):
                 clean = item.replace("<strong>", "")
                 email_address.append(clean + domain)              
         except Exception as e:
-            continue         
+            continue
+    
 
 class NetcraftAPI(object):
     """
@@ -492,7 +513,7 @@ print """
 BBBBBBBBBBBBBBBBB  lllllll                       tttt                          
 B::::::::::::::::B l:::::l                     ttt:::t                          
 B::::::BBBBBB:::::Bl:::::l                     t:::::t                          
-BB:::::B     B:::::l:::::l{6}               t:::::t                          
+BB:::::B     B:::::l:::::l{6}              t:::::t                          
   B::::B     B:::::Bl::::luuuuuu    uuuuuttttttt:::::ttttttt      ooooooooooo   
   B::::B     B:::::Bl::::lu::::u    u::::t:::::::::::::::::t    oo:::::::::::oo 
   B::::BBBBBB:::::B l::::lu::::u    u::::t:::::::::::::::::t   o:::::::::::::::o
@@ -524,47 +545,92 @@ if __name__ == "__main__":
     if vulnerable_list == []:
         print "\nNone of the Name Servers are vulnerable to Zone Transfers"
 #Bruting
-        check_count = line_count(filename1)
-        subs = get_subs(filename1)
-        pool = ThreadPool(12)
-        print """
+        print '\nTesting For Wild Cards'
+        value = wildCards(domain)
+        if value == True:
+            print colored('\nWild Cards Are In Place','green')
+            print '\nGathering Email Addresses'
+            userCountry, userServer = get_gserver()
+            start_time_email = time.time()
+            t1 = threading.Thread(target=googlesearch, args=(domain, userCountry, userServer,))
+            t2 = threading.Thread(target=bingsearch, args=(domain,))
+            t1.start()
+            t2.start()
+            t1.join()
+            t2.join()
+            time_spent_email = time.time() - start_time_email
+            temp1 = [item.lower() for item in email_address]
+            new_list = sorted(set(temp1))
+            print '\nEmails Gathered From Google and Bing:\n'
+            temp = 0
+            for item in new_list:
+                if item == '@' + domain or item == '@':
+                    pass
+                else:
+                    temp += 1
+                    print item
+            print '\nPotential Emails Found: {}' .format(str(temp))
+            print "\nEmail Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"         
+            sys.exit()
+        else:
+            print colored('\nWild Cards Are Not In Place','red')
+            
+            check_count = line_count(filename1)
+            subs = get_subs(filename1)
+            pool = ThreadPool(12)
+            print """
 Brute Forcing Sub-Domains
-
-Note:                                                                        
-While you are waiting we will gather email addresses."""
-        userCountry, userServer = get_gserver()
-        t1 = threading.Thread(target=googlesearch, args=(domain,userCountry, userServer,))
-        t1.start()
-        t2 = threading.Thread(target=bingsearch, args=(domain,))
-        t2.start()
-        t1.join()
-        t2.join()
-        start_time = time.time()
-        pool.map(get_brutes, subs)
-        pool.close()        
-
-        if targets == []:
-            targets.append("temp-enter")
+    
+    While you are waiting we will gather email addresses."""
         
-        domains = list(set(targets + netcraft_list))
-        domains.sort()
-        if "temp-enter" in domains: domains.remove("temp-enter")
-        target_dict = dict((x.split(' ') for x in domains))
+            print '\nGathering Email Addresses From Google and Bing'
+            userCountry, userServer = get_gserver()
+            start_time_email = time.time()
+            start_time_total = time.time()
+            t1 = threading.Thread(target=googlesearch, args=(domain, userCountry, userServer,))
+            t1.start()
+            t2 = threading.Thread(target=bingsearch, args=(domain,))
+            t2.start()
+            t1.join()
+            t2.join()
+            time_spent_email = time.time() - start_time_email    
+            start_time_brute = time.time()
+            pool.map(get_brutes, subs)
+            pool.close()
+            time_spent_total = time.time() - start_time_total
+            time_spent_brute = time.time() - start_time_brute
+            if targets == []:
+                targets.append("temp-enter")
+            
+            domains = list(set(targets + netcraft_list))
+            domains.sort()
+            if "temp-enter" in domains: domains.remove("temp-enter")
+            target_dict = dict((x.split(' ') for x in domains))
 #Outputing data
-        output_data(target_dict, sub_intrest)
+            output_data(target_dict, sub_intrest)
     else:
+#Vuln Zone Trans
         print '\nGathering Email Addresses From Google and Bing'
-        t1 = threading.Thread(target=googlesearch, args=(domain,))
+        userCountry, userServer = get_gserver()
+        start_time_email = time.time()
+        t1 = threading.Thread(target=googlesearch, args=(domain, userCountry, userServer,))
         t1.start()
         t2 = threading.Thread(target=bingsearch, args=(domain,))
         t2.start()
         t1.join()
         t2.join()
+        time_spent_email = time.time() - start_time_email
         temp1 = [item.lower() for item in email_address]
         new_list = sorted(set(temp1))
         print '\nEmails Gathered From Google and Bing:\n'
+        temp = 0
         for item in new_list:
             if item == '@' + domain or item == '@':
                 pass
             else:
+                temp += 1
                 print item
+        
+        print '\nPotential Emails Found: {}' .format(str(temp))        
+        print "\nEmail Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"
+                  
