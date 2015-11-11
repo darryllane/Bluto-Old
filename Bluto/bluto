@@ -591,6 +591,8 @@ Brute Forcing Sub-Domains
             t1.start()
             t2 = threading.Thread(target=bingsearch, args=(domain,))
             t2.start()
+            t1.join()
+            t2.join()
             time_spent_email = time.time() - start_time_email    
             start_time_brute = time.time()
             pool.map(get_brutes, subs)
