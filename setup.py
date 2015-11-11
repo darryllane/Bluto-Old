@@ -2,11 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='Bluto',
-<<<<<<< HEAD
-    version='1.1.9',
-=======
     version='1.1.11',
->>>>>>> blutodev
     author='Darryl lane',
     author_email='DarrylLane101@gmail.com',
     url='https://github.com/RandomStorm/Bluto',
