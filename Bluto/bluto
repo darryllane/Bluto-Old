@@ -7,10 +7,11 @@ from termcolor import colored
 import requests, re, collections, threading, Queue
 from bs4 import BeautifulSoup
 import urllib2, hashlib, json, site, random, string
+from progressbar import *
 
 email_address = []
 targets = []
-prox = True
+prox = False
 default_s = False
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
@@ -28,6 +29,11 @@ filename1 = path + "/Bluto/doc/subdomains-top1mil-20000.txt"
 filename2 = path + "/Bluto/doc/sub_interest.txt"
 useragent_f = path + "/Bluto/doc/user_agents.txt"
 countries_file = path + "/Bluto/doc/countries.txt"
+
+def time_cal(timespent):
+    hours, remainder = divmod(time_spent_email, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return (hours, minutes, seconds)
 
 def output_data(target_dict, sub_intrest):
     temp1 = [item.lower() for item in email_address]
@@ -48,10 +54,10 @@ def output_data(target_dict, sub_intrest):
         else:
             print item + "\t",sorted_dict[item]
 
-    
-    print "\nEmail Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"   
+           
+    print "\nEmail Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"
     print "Requests executed:", str(check_count) + " in " + str(datetime.timedelta(seconds=(time_spent_brute))) + " seconds"
-    print "Total Time:", str(datetime.timedelta(seconds=(time_spent_total))) + " seconds\n"
+    print "Total Time:", str(datetime.timedelta(seconds=(time_spent_total))) + " seconds""\n"
                 
 def zone_trans(zn_list, domain):
     print "\nAttempting Zone Transfers"
@@ -353,9 +359,8 @@ def get_gserver():
     return (userCountry, userServer)
 
 def googlesearch(domain, userCountry, userServer):
-    i = 0
     uas = LoadUserAgents(useragent_f)
-    searchfor = '@' + '"' + domain + '"'     
+    searchfor = '@' + '"' + domain + '"'
     for start in range(0,50):
         try:
             ua = random.choice(uas)
@@ -377,10 +382,9 @@ def googlesearch(domain, userCountry, userServer):
             else:
                 response = requests.get(link, headers=headers, params=payload)            
             if str(response.status_code) == '503':
-                if i == 0:
-                    print colored('\nGoogle is responding with a Captcha...try again shortly\n', 'red')
-                    print colored('Bing results will still follow\n','green')
-                    i += 1
+                print colored('Google is responding with a Captcha...try again shortly\n', 'red')
+                print colored('Bing results will still follow\n','green')
+                break
             reg_emails = re.compile('[a-zA-Z0-9.]*' + '@' + '<em>')        
             temp = reg_emails.findall(response.text)
             time.sleep(3)
@@ -389,12 +393,11 @@ def googlesearch(domain, userCountry, userServer):
                 email_address.append(clean + domain)
                             
         except Exception as e:
-            print e
             continue
 
-def bingsearch(domain):
+def bingsearch(domain):       
     uas = LoadUserAgents(useragent_f)
-    searchfor = '@' + '"' + domain + '"'  
+    searchfor = '@' + '"' + domain + '"'    
     for start in range(0,200):
         ua = random.choice(uas)
         if prox == True:
@@ -415,12 +418,13 @@ def bingsearch(domain):
                 response = requests.get(link, headers=headers, params=payload)
             reg_emails = re.compile('[a-zA-Z0-9.-]*' + '@' + '<strong>')
             temp = reg_emails.findall(response.text)
-            time.sleep(1)
+            time.sleep(0.5)
             for item in temp:
                 clean = item.replace("<strong>", "")
                 email_address.append(clean + domain)              
         except Exception as e:
-            continue         
+            continue
+    
 
 class NetcraftAPI(object):
     """
@@ -555,6 +559,7 @@ if __name__ == "__main__":
             t2.start()
             t1.join()
             t2.join()
+            time_spent_email = time.time() - start_time_email
             temp1 = [item.lower() for item in email_address]
             new_list = sorted(set(temp1))
             print '\nEmails Gathered From Google and Bing:\n'
@@ -566,8 +571,7 @@ if __name__ == "__main__":
                     temp += 1
                     print item
             print '\nPotential Emails Found: {}' .format(str(temp))
-            time_spent_email = time.time() - start_time_email
-            print "Email Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"            
+            print "\nEmail Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"         
             sys.exit()
         else:
             print colored('\nWild Cards Are Not In Place','red')
@@ -588,8 +592,6 @@ Brute Forcing Sub-Domains
             t1.start()
             t2 = threading.Thread(target=bingsearch, args=(domain,))
             t2.start()
-            t1.join()
-            t2.join()
             time_spent_email = time.time() - start_time_email    
             start_time_brute = time.time()
             pool.map(get_brutes, subs)
@@ -611,6 +613,10 @@ Brute Forcing Sub-Domains
         t1.start()
         t2 = threading.Thread(target=bingsearch, args=(domain,))
         t2.start()
+        t1.join()
+        t2.join()
+        time_spent_email = time.time() - start_time_email
+        print time_spent_email
         temp1 = [item.lower() for item in email_address]
         new_list = sorted(set(temp1))
         print '\nEmails Gathered From Google and Bing:\n'
@@ -621,9 +627,8 @@ Brute Forcing Sub-Domains
             else:
                 temp += 1
                 print item
-        print '\nPotential Emails Found: {}' .format(str(temp))
-        time_spent_email = time.time() - start_time_email
-        print "\nEmail Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"  
-        print "\nBrute Requests Executed:", str(check_count) + " in " + str(datetime.timedelta(seconds=(time_spent_brute))) + " seconds"
-        time_spent_total = time.time() - start_time_total
-        print "\nTotal Time:", str(datetime.timedelta(seconds=(time_spent))) + " seconds"           
+        
+        print '\nPotential Emails Found: {}' .format(str(temp))        
+        print "\nEmail Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"
+        print "Requests executed:", str(check_count) + " in " + str(datetime.timedelta(seconds=(time_spent_brute))) + " seconds"
+        print "Total Time:", str(datetime.timedelta(seconds=(time_spent_total))) + " seconds""\n"           
