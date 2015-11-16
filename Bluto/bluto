@@ -15,7 +15,7 @@ prox = False
 default_s = False
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
-version = "1.1.11"
+version = "1.1.12"
 
 sites = site.getsitepackages()
 for item in sites:
@@ -576,7 +576,8 @@ if __name__ == "__main__":
                     temp += 1
                     print item
             print '\nPotential Emails Found: {}' .format(str(temp))
-            print "\nEmail Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"         
+            time_spent_email_f = str(datetime.timedelta(seconds=(time_spent_email))).split('.')[0]
+            print "\nEmail Enumeration: {0}\n".format(time_spent_email_f)         
             sys.exit()
         else:
             print colored('\n\tWild Cards Are Not In Place','red')
