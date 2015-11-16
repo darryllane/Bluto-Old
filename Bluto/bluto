@@ -7,6 +7,7 @@ from termcolor import colored
 import requests, re, collections, threading, Queue
 from bs4 import BeautifulSoup
 import urllib2, hashlib, json, site, random, string
+import signal
 
 email_address = []
 targets = []
@@ -53,10 +54,12 @@ def output_data(target_dict, sub_intrest):
         else:
             print item + "\t",sorted_dict[item]
 
-           
-    print "\nEmail Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"
-    print "Requests executed:", str(check_count) + " in " + str(datetime.timedelta(seconds=(time_spent_brute))) + " seconds"
-    print "Total Time:", str(datetime.timedelta(seconds=(time_spent_total))) + " seconds""\n"
+    time_spent_email_f = str(datetime.timedelta(seconds=(time_spent_email))).split('.')[0]
+    time_spent_brute_f = str(datetime.timedelta(seconds=(time_spent_brute))).split('.')[0]
+    time_spent_total_f = str(datetime.timedelta(seconds=(time_spent_total))).split('.')[0]
+    print "\nEmail Enumeration:", time_spent_email_f
+    print "Requests executed:", str(check_count) + " in ", time_spent_brute_f
+    print "Total Time:", time_spent_total_f, '\n'
                 
 def zone_trans(zn_list, domain):
     print "\nAttempting Zone Transfers"
@@ -145,7 +148,7 @@ def get_details(domain):
             print colored(i, 'green')
     except:
         e = str(sys.exc_info()[0])
-        print "\nCheck The Target Domain Is Correct!\n\nQuitting.."
+        print "\nCheck The Target Domain == Correct!\n\nQuitting.."
         sys.exit()
         
     try:    
@@ -172,11 +175,15 @@ def line_count(filename):
         lines += 1
     return lines
 
-def wildCards(domain):
+def wild_cards(domain):
     try:
         one = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(15))
         myAnswers = myResolver.query(str(one) + '.' + str(domain))
     
+    except dns.resolver.NoNameservers:
+        print '\n\tNo Name Servers'
+        pass
+        
     except dns.resolver.NXDOMAIN:
         return False
     else:
@@ -248,7 +255,7 @@ def get_netcraft(domain):
             
     return netcraft_list
 
-def LoadUserAgents(useragent_f):
+def user_agents(useragent_f):
     uas = []
     with open(useragent_f, 'rb') as uaf:
         for ua in uaf.readlines():
@@ -283,14 +290,14 @@ def get_gserver():
         try:
             if prox == True:
                 proxy = {'http' : 'http://127.0.0.1:8080'}
-                r = requests.get(r'http://www.telize.com/geoip/', proxies=proxy)
-                ip = r.json()['ip']
-                originCountry = r.json()['country'] 
+                r = requests.get(r'http://ip.pycox.com/json', proxies=proxy)
+                ip = r.json()['q']
+                originCountry = r.json()['country_name'] 
                 
             else:  
-                r = requests.get(r'http://www.telize.com/geoip/')
-                ip = r.json()['ip']
-                originCountry = r.json()['country']
+                r = requests.get(r'http://ip.pycox.com/json')
+                ip = r.json()['q']
+                originCountry = r.json()['country_name']
                 
         except ValueError as e:
             if o == 0:
@@ -354,11 +361,11 @@ def get_gserver():
                 userServer = 'http://www.google.co.uk'
                 userCountry = 'United Kingdom'
     
-    print '\nSearching From: {0}\nGoogle Server: {1}\n' .format(userCountry.capitalize(), userServer)
+    print '\n\tSearching From: {0}\n\tGoogle Server: {1}\n' .format(userCountry.title(), userServer)
     return (userCountry, userServer)
 
-def googlesearch(domain, userCountry, userServer):
-    uas = LoadUserAgents(useragent_f)
+def google_search(domain, userCountry, userServer):
+    uas = user_agents(useragent_f)
     searchfor = '@' + '"' + domain + '"'
     for start in range(0,50):
         try:
@@ -381,7 +388,7 @@ def googlesearch(domain, userCountry, userServer):
             else:
                 response = requests.get(link, headers=headers, params=payload)            
             if str(response.status_code) == '503':
-                print colored('Google is responding with a Captcha...try again shortly\n', 'red')
+                print colored('Google == responding with a Captcha...try again shortly\n', 'red')
                 print colored('Bing results will still follow\n','green')
                 break
             reg_emails = re.compile('[a-zA-Z0-9.]*' + '@' + '<em>')        
@@ -394,8 +401,8 @@ def googlesearch(domain, userCountry, userServer):
         except Exception as e:
             continue
 
-def bingsearch(domain):       
-    uas = LoadUserAgents(useragent_f)
+def bing_search(domain):       
+    uas = user_agents(useragent_f)
     searchfor = '@' + '"' + domain + '"'    
     for start in range(0,200):
         ua = random.choice(uas)
@@ -422,12 +429,11 @@ def bingsearch(domain):
                 clean = item.replace("<strong>", "")
                 email_address.append(clean + domain)              
         except Exception as e:
-            continue
-    
+            continue  
 
 class NetcraftAPI(object):
     """
-    This is the (unofficial) Python API for the netcraft.com Website.
+    This == the (unofficial) Python API for the netcraft.com Website.
     Using this code, you can retrieve subdomains. This has been modified from its 
     original state by the authors of Bluto, the original can be found on the following url. 
     https://github.com/PaulSec/API-netcraft.com
@@ -532,9 +538,9 @@ BBBBBBBBBBBBBBBBB  llllllll   uuuuuuuu  uuuu       ttttttttttt    ooooooooooo
                  {5}
 """ . format (colored("Author: Darryl Lane", 'blue'),colored("Twitter: @darryllane101", 'blue'),colored("DNS Recon", 'green'),colored("Brute Forcer", 'green'),colored("DNS Zone Transfers", 'green'),colored("https://github.com/RandomStorm/Bluto", 'green'),colored("v" + version, 'red'),(colored("Email Enumeration", 'green')))
 
-domain = raw_input("\nTarget Domain: ")
-
 if __name__ == "__main__":
+    domain = raw_input("\nTarget Domain: ")
+    
 #Detail Call
     sub_intrest = get_sub_interest(filename2)
     zn_list = get_details(domain)
@@ -546,14 +552,14 @@ if __name__ == "__main__":
         print "\nNone of the Name Servers are vulnerable to Zone Transfers"
 #Bruting
         print '\nTesting For Wild Cards'
-        value = wildCards(domain)
+        value = wild_cards(domain)
         if value == True:
-            print colored('\nWild Cards Are In Place','green')
+            print colored('\n\tWild Cards Are In Place','green')
             print '\nGathering Email Addresses'
             userCountry, userServer = get_gserver()
             start_time_email = time.time()
-            t1 = threading.Thread(target=googlesearch, args=(domain, userCountry, userServer,))
-            t2 = threading.Thread(target=bingsearch, args=(domain,))
+            t1 = threading.Thread(target=google_search, args=(domain, userCountry, userServer,))
+            t2 = threading.Thread(target=bing_search, args=(domain,))
             t1.start()
             t2.start()
             t1.join()
@@ -573,32 +579,29 @@ if __name__ == "__main__":
             print "\nEmail Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"         
             sys.exit()
         else:
-            print colored('\nWild Cards Are Not In Place','red')
+            print colored('\n\tWild Cards Are Not In Place','red')
             
             check_count = line_count(filename1)
             subs = get_subs(filename1)
             pool = ThreadPool(12)
-            print """
-Brute Forcing Sub-Domains
-    
-    While you are waiting we will gather email addresses."""
-        
+            print '\nBrute Forcing Sub-Domains\n\n\tWhile you are waiting we will gather email addresses'
             print '\nGathering Email Addresses From Google and Bing'
             userCountry, userServer = get_gserver()
-            start_time_email = time.time()
             start_time_total = time.time()
-            t1 = threading.Thread(target=googlesearch, args=(domain, userCountry, userServer,))
+            start_time_email = time.time()
+            t1 = threading.Thread(target=google_search, args=(domain, userCountry, userServer,))
+            t2 = threading.Thread(target=bing_search, args=(domain,))
             t1.start()
-            t2 = threading.Thread(target=bingsearch, args=(domain,))
             t2.start()
             t1.join()
             t2.join()
-            time_spent_email = time.time() - start_time_email    
+            time_spent_email = time.time() - start_time_email
             start_time_brute = time.time()
             pool.map(get_brutes, subs)
+            time_spent_brute = time.time() - start_time_brute
             pool.close()
             time_spent_total = time.time() - start_time_total
-            time_spent_brute = time.time() - start_time_brute
+            
             if targets == []:
                 targets.append("temp-enter")
             
@@ -613,9 +616,9 @@ Brute Forcing Sub-Domains
         print '\nGathering Email Addresses From Google and Bing'
         userCountry, userServer = get_gserver()
         start_time_email = time.time()
-        t1 = threading.Thread(target=googlesearch, args=(domain, userCountry, userServer,))
+        t1 = threading.Thread(target=google_search, args=(domain, userCountry, userServer,))
         t1.start()
-        t2 = threading.Thread(target=bingsearch, args=(domain,))
+        t2 = threading.Thread(target=bing_search, args=(domain,))
         t2.start()
         t1.join()
         t2.join()
@@ -631,6 +634,8 @@ Brute Forcing Sub-Domains
                 temp += 1
                 print item
         
-        print '\nPotential Emails Found: {}' .format(str(temp))        
-        print "\nEmail Enumeration:", str(datetime.timedelta(seconds=(time_spent_email))) + " seconds"
-                  
+        print '\nPotential Emails Found: {}' .format(str(temp))   
+        time_spent_email_f = str(datetime.timedelta(seconds=(time_spent_email))).split('.')[0]
+        print "\nEmail Enumeration: {0}\n".format(time_spent_email_f)
+
+      
