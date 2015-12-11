@@ -1,21 +1,35 @@
 #!/usr/local/bin/python
 
 from multiprocessing.dummy import Pool as ThreadPool 
-import dns.resolver, dns.query, dns.zone
-import sys, time, datetime, socket, os, math
-from termcolor import colored
-import requests, re, collections, threading, Queue
 from bs4 import BeautifulSoup
-import urllib2, hashlib, json, site, random, string
-import signal
+from termcolor import colored
+import dns.resolver
+import dns.query
+import dns.zone
+import sys
+import time
+import datetime
+import socket
+import os
+import math
+import requests
+import re
+import collections
+import threading
+import urllib2
+import hashlib
+import json
+import site
+import random
+import string
+import Queue
 
-email_address = []
 targets = []
-prox = False
+prox = True
 default_s = False
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
-version = "1.1.12"
+version = "1.1.13"
 
 sites = site.getsitepackages()
 for item in sites:
@@ -30,38 +44,99 @@ filename2 = path + "/Bluto/doc/sub_interest.txt"
 useragent_f = path + "/Bluto/doc/user_agents.txt"
 countries_file = path + "/Bluto/doc/countries.txt"
 
-def time_cal(timespent):
-    hours, remainder = divmod(time_spent_email, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    return (hours, minutes, seconds)
-
-def output_data(target_dict, sub_intrest):
-    temp1 = [item.lower() for item in email_address]
-    new_list = sorted(set(temp1))    
-    temp = 0
-    for item in new_list:
-        if item == '@' + domain or item == '@' or item == 'en..':
+def action_output_wild_false(brute_results_dict, sub_intrest, google_results, bing_true_results,linkedin_results, check_count):
+    
+    linkedin_evidence_results = []
+    email_evidence_results = []
+    email_results = []
+    url_seen = []
+    person_seen = []
+    final_emails = []
+    
+    for e, u in google_results:
+        if e not in email_results:
+            email_results.append(e)
+        if e not in url_seen:
+            email_evidence_results.append((e, u))
+    for e, u in bing_true_results:
+        email_results.append(e)
+        if u not in url_seen:
+            email_evidence_results.append((e, u))        
+              
+    for email, url_href, person in linkedin_results:
+        if person not in person_seen:
+            person_seen.append(person)
+        if email not in email_results:
+                email_results.append(str(email).lower())
+        if url_href not in url_seen:
+            url_seen.append(url_href)
+            linkedin_evidence_results.append((email, url_href, person))
+            email_evidence_results.append((email, url_href))
+            
+    linkedin_evidence_results.sort(key=lambda tup: tup[2])   
+    sorted_email = sorted(email_results)
+    for email in sorted_email:
+        if email == '[]':
             pass
         else:
-            temp += 1
-            print item
-    print '\nPotential Emails Found: {}' .format(str(temp))    
-    sorted_dict = collections.OrderedDict(sorted(target_dict.items()))
+            final_emails.append(email)
+    email_count = len(final_emails)
+    staff_count = len(person_seen)
+    
+    print '\nEmail Addresses:\n'
+    for email in final_emails:
+        if email == '[]':
+            pass
+        else:
+            print email    
+    
+    print '\nLinkedIn Results:\n'
+    
+    for email, url_href, person in linkedin_results:
+        if person not in person_seen:
+            person_seen.append(person)   
+    
+    sorted_person = sorted(person_seen)
+    for person in sorted_person:
+        print person
+    
+        
+    sorted_dict = collections.OrderedDict(sorted(brute_results_dict.items()))
     print "\nBluto Results: \n"
     for item in sorted_dict:
         if item in sub_intrest:
             print colored(item + "\t", 'red'), colored(sorted_dict[item], 'red')
         else:
             print item + "\t",sorted_dict[item]
-
+    
+    print '\nStats and Evidence Report:'
+    print '\n\tEmail Evidence:\n'
+    for email, url in email_evidence_results:
+        if email == []:
+            pass
+        else:
+            print email
+            print url
+    
+    print '\n\tLinkedIn Evidence:\n'
+    for email, url_href, person in linkedin_evidence_results:
+        print person
+        print url_href
+        if email == []:
+            pass
+        else:
+            print email
     time_spent_email_f = str(datetime.timedelta(seconds=(time_spent_email))).split('.')[0]
     time_spent_brute_f = str(datetime.timedelta(seconds=(time_spent_brute))).split('.')[0]
     time_spent_total_f = str(datetime.timedelta(seconds=(time_spent_total))).split('.')[0]
-    print "\nEmail Enumeration:", time_spent_email_f
+    print '\nPotential Emails Found: {}' .format(str(email_count))
+    print 'Potential Staff Members Found: {}' .format(str(staff_count))
+    print "Email Enumeration:", time_spent_email_f
     print "Requests executed:", str(check_count) + " in ", time_spent_brute_f
-    print "Total Time:", time_spent_total_f, '\n'
+    print "Total Time:", time_spent_total_f, '\n'    
+    
                 
-def zone_trans(zn_list, domain):
+def action_zone_transfer(zn_list, domain):
     print "\nAttempting Zone Transfers"
     zn_list.sort()
     vuln = True
@@ -113,7 +188,7 @@ def zone_trans(zn_list, domain):
                     pass
                 else:
                     print """An unexpected error has occured. Please report the error and it's context to https://github.com/RandomStorm/Bluto/issues, thank you."""
-                    print error + ': in "zone_trans"\n'
+                    print error + ': in "action_zone_transfer"\n'
             print z[n].to_text(n)
 
         clean_dump = sorted(set(dump_list))
@@ -129,7 +204,7 @@ def zone_trans(zn_list, domain):
     
     return vulnerable_listT
 
-def get_details(domain):
+def get_dns_details(domain):
     ns_list = []
     zn_list =[]
     mx_list = []        
@@ -169,13 +244,13 @@ def get_details(domain):
              
     return zn_list
 
-def line_count(filename):
+def get_line_count(filename):
     lines = 0
     for line in open(filename):
         lines += 1
     return lines
 
-def wild_cards(domain):
+def action_wild_cards(domain):
     try:
         one = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(15))
         myAnswers = myResolver.query(str(one) + '.' + str(domain))
@@ -189,7 +264,7 @@ def wild_cards(domain):
     else:
         return True    
 
-def get_brutes(subdomain):
+def action_brute(subdomain):
     try:   
         myAnswers = myResolver.query(subdomain)
         for data in myAnswers:
@@ -197,6 +272,7 @@ def get_brutes(subdomain):
             
     except Exception as e:
         pass
+    
     
 def get_subs(filename):
     full_list = []
@@ -228,7 +304,7 @@ def get_sub_interest(filename):
     return full_list
 
 
-def get_netcraft(domain):
+def action_netcraft(domain):
     netcraft_list = []
     print "\nPassive Gatherings From NetCraft\n"
     try:
@@ -255,7 +331,7 @@ def get_netcraft(domain):
             
     return netcraft_list
 
-def user_agents(useragent_f):
+def get_user_agents(useragent_f):
     uas = []
     with open(useragent_f, 'rb') as uaf:
         for ua in uaf.readlines():
@@ -264,7 +340,7 @@ def user_agents(useragent_f):
     random.shuffle(uas)
     return uas
 
-def get_gserver():
+def action_country_id():
     userCountry = ''
     userServer = ''
     userIP = ''
@@ -364,12 +440,130 @@ def get_gserver():
     print '\n\tSearching From: {0}\n\tGoogle Server: {1}\n' .format(userCountry.title(), userServer)
     return (userCountry, userServer)
 
-def google_search(domain, userCountry, userServer):
-    uas = user_agents(useragent_f)
-    searchfor = '@' + '"' + domain + '"'
-    for start in range(0,50):
+def action_linkedin(domain, q):
+    uas = get_user_agents(useragent_f)
+    email = []
+    entries_tuples = []
+    seen = set()
+    results = []
+
+    for start in range (0,50):
+        ua = random.choice(uas)
+        
+        link = 'https://search.disconnect.me/searchTerms/search?'
+        proxy = {'https' : 'https://127.0.0.1:8080'}
+        
+        headers = {'Connection' : 'close', 
+         'User-Agent' : ua, 
+         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 
+         'Accept-Language': 'en-US,en;q=0.5',
+         'Accept-Encoding': 'gzip, deflate',
+         'Referer': 'http://www.google.com'}
+        
+
+        payload = {'start':'nav','option':'Web','query': 'site:linkedin.com/in ' + domain,'ses':'Google','location_option':'UK','nextDDG':'/search?q=&hl=en&start='+ str(start*10) + '&sa=N','showIcons':'false','filterIcons':'none','js_enabled':'1','source':'None'}
+    
         try:
-            ua = random.choice(uas)
+            if prox == True:
+                requests.packages.urllib3.disable_warnings()
+                response = requests.get(link, headers=headers, params=payload, proxies=proxy,verify=False)
+            else:
+                response = requests.get(link, headers=headers, params=payload)
+                
+            soup = BeautifulSoup(response.text, "html5lib")
+            
+            div = soup.find('div', {'id': 'results'})
+            ul = div.find('ul', {'id': 'normal-results'})            
+        except Exception as e:
+            pass
+    
+        try:
+            for li in ul.findAll('li'):
+                title = li.find('a', {'class': 'title'})
+                match2 = re.search('[a-zA-Z0-9.]*' + '@' + domain, title.text)
+                url_href = title.get('href')
+                nametemp = title.text
+                person_temp = (nametemp.split(' | ')[0])
+                person = re.match('\w+\s\w+',person_temp).group(0)
+                email_text = li.findAll('p')               
+                match = re.search('[a-zA-Z0-9.]*' + '@' + domain, str(email_text))
+                if match:
+                    if match:
+                        email = match.group(0)
+                entries_tuples.append((email, url_href, person.title()))
+                        
+        except Exception as e:
+            pass   
+        
+    for person in entries_tuples:
+        if person[2] not in seen:
+            results.append(person)
+            seen.add(person[2])
+        
+    q.put(sorted(results))
+
+def action_google_disconnect(domain):
+    entries_tuples = []
+    seen = set()
+    results = []
+    ua = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
+
+    headers = {'Connection' : 'close', 
+               'User-Agent' : ua, 
+               'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 
+               'Accept-Language': 'en-US,en;q=0.5',
+               'Accept-Encoding': 'gzip, deflate',
+               'Referer': 'http://www.google.com'}
+    
+    link = 'https://search.disconnect.me/searchTerms/search?'
+    proxy = {'https' : 'https://127.0.0.1:8080'}
+    
+    for start in range (0,50):
+    
+        payload = {'start':'nav','option':'Web','query': '@' + '"' + domain + '"','ses':'Google','location_option':'UK','nextDDG':'/search?q=&hl=en&start='+ str(start*10) + '&sa=N','showIcons':'false','filterIcons':'none','js_enabled':'1','source':'None'}
+        
+        if prox == True:
+            requests.packages.urllib3.disable_warnings()
+            response = requests.get(link, headers=headers, params=payload, proxies=proxy,verify=False)
+        else:
+            response = requests.get(link, headers=headers, params=payload)            
+        
+        soup = BeautifulSoup(response.text, "lxml")
+        
+        div = soup.find('div', {'id': 'results'})
+        ul = div.find('ul', {'id': 'normal-results'})
+        try:
+            for li in ul.findAll('li'):
+                title = li.find('a', {'class': 'title'})
+                url_href = title.get('href')
+                email_text = li.findAll('p')[1].text               
+                match = re.search('[a-zA-Z0-9.]*' + '@' + '[a-zA-Z0-9.-]*' + domain, email_text)
+                if match:
+                    if match:
+                        email = match.group(0)
+                        entries_tuples.append((email,url_href))
+                            
+        except Exception as e:
+            print 'Google Disconnect: ', e
+            pass
+        
+    for urls in entries_tuples:
+        if urls[1] not in seen:
+            results.append(urls)
+            seen.add(urls[1])
+                
+    q.put(sorted(results))
+
+
+def action_google_true(domain, userCountry, userServer, q):
+    uas = get_user_agents(useragent_f)
+    searchfor = '@' + '"' + domain + '"'
+    entries_tuples = []
+    seen = set()
+    results = []    
+    for start in range(0,20):
+        ua = random.choice(uas)
+        try:
             if prox == True:
                 proxy = {'http' : 'http://127.0.0.1:8080'}
             else:
@@ -380,31 +574,53 @@ def google_search(domain, userCountry, userServer):
                        'Accept-Language': 'en-US,en;q=0.5',
                        'Accept-Encoding': 'gzip, deflate',
                        'Referer': 'http://www.google.com'}
-            payload = { 'nord':'1', 'q': searchfor, 'start': start*2}
+            payload = { 'nord':'1', 'q': searchfor, 'start': start*10}
 
-            link = '{0}/search?num=100' .format(userServer)
+            link = '{0}/search?num=200' .format(userServer)
             if prox == True:
                 response = requests.get(link, headers=headers, params=payload, proxies=proxy)
             else:
-                response = requests.get(link, headers=headers, params=payload)            
+                response = requests.get(link, headers=headers, params=payload)
+                
+            soup = BeautifulSoup(response.text, "lxml")
+
+            for cite in soup.select("li.g div.s div.kv cite"):
+                span = cite.find_next("span", class_="st")
+                match = re.search('[a-zA-Z0-9.]*' + '@' + domain, span.text)
+                if match:
+                    if match is not '@' or match is not '@' + domain:
+                        email = match.group(0)
+                        url_href = cite.text
+                        entries_tuples.append((str(email).lower(),url_href))
+ 
             if str(response.status_code) == '503':
-                print colored('Google == responding with a Captcha...try again shortly\n', 'red')
-                print colored('Bing results will still follow\n','green')
+                print colored('Google is responding with a Captcha...\n', 'red')
+                print colored('We will use an alterante method, however\nthe findings may not be as comprehensive\n','green')
+                entries_tuples = search_google2(domain)
+                for urls in entries_tuples:
+                    if urls[1] not in seen:
+                        results.append(urls)
+                        seen.add(urls[1])
+                q.put(sorted(results))
                 break
-            reg_emails = re.compile('[a-zA-Z0-9.]*' + '@' + '<em>')        
-            temp = reg_emails.findall(response.text)
+            
             time.sleep(3)
-            for item in temp:
-                clean = item.replace("u'", "").replace('<em>','')
-                email_address.append(clean + domain)
-                            
+            for urls in entries_tuples:
+                if urls[1] not in seen:
+                    results.append(urls)
+                    seen.add(urls[1])         
+                  
         except Exception as e:
             continue
+        
+    
+    q.put(sorted(results))     
 
-def bing_search(domain):       
-    uas = user_agents(useragent_f)
+def action_bing_true(domain,q):
+    emails = []
+    uas = get_user_agents(useragent_f)
     searchfor = '@' + '"' + domain + '"'    
-    for start in range(0,200):
+    for start in range(0,50):
         ua = random.choice(uas)
         if prox == True:
             proxy = {'http' : 'http://127.0.0.1:8080'}
@@ -427,10 +643,12 @@ def bing_search(domain):
             time.sleep(1)
             for item in temp:
                 clean = item.replace("<strong>", "")
-                email_address.append(clean + domain)              
+                email.append(clean + domain)  
+                
         except Exception as e:
             continue  
-
+    q.put(sorted(emails))
+        
 class NetcraftAPI(object):
     """
     This == the (unofficial) Python API for the netcraft.com Website.
@@ -540,34 +758,44 @@ BBBBBBBBBBBBBBBBB  llllllll   uuuuuuuu  uuuu       ttttttttttt    ooooooooooo
 
 if __name__ == "__main__":
     domain = raw_input("\nTarget Domain: ")
+    emails = []
     
 #Detail Call
     sub_intrest = get_sub_interest(filename2)
-    zn_list = get_details(domain)
+    zn_list = get_dns_details(domain)
 #NetCraft Call
-    netcraft_list = get_netcraft(domain)
+    netcraft_list = action_netcraft(domain)
 #ZoneTrans Call    
-    vulnerable_list = zone_trans(zn_list, domain)
+    vulnerable_list = action_zone_transfer(zn_list, domain)
     if vulnerable_list == []:
         print "\nNone of the Name Servers are vulnerable to Zone Transfers"
 #Bruting
         print '\nTesting For Wild Cards'
-        value = wild_cards(domain)
+        value = action_wild_cards(domain)
         if value == True:
+            email_address = []
             print colored('\n\tWild Cards Are In Place','green')
             print '\nGathering Email Addresses'
-            userCountry, userServer = get_gserver()
+            userCountry, userServer = action_country_id()
             start_time_email = time.time()
-            t1 = threading.Thread(target=google_search, args=(domain, userCountry, userServer,))
-            t2 = threading.Thread(target=bing_search, args=(domain,))
+            q1 = Queue.Queue()
+            q2 = Queue.Queue()
+            t1 = threading.Thread(target=action_google_true, args=(domain, userCountry, userServer,q1))
+            t2 = threading.Thread(target=action_bing_true, args=(domain,q2))
             t1.start()
             t2.start()
             t1.join()
             t2.join()
+            google_true_result = q1.get()
+            bing_true_result = q2.get()
             time_spent_email = time.time() - start_time_email
+            for emails, urls in google_results:
+                email_address.append(emails)
+            for emails in bing_true_result:
+                email_address.append(emails)
             temp1 = [item.lower() for item in email_address]
             new_list = sorted(set(temp1))
-            print '\nEmails Gathered From Google and Bing:\n'
+            print '\nGathering Email Addresses From Google, Bing And LinkedIn'
             temp = 0
             for item in new_list:
                 if item == '@' + domain or item == '@':
@@ -581,48 +809,58 @@ if __name__ == "__main__":
             sys.exit()
         else:
             print colored('\n\tWild Cards Are Not In Place','red')
-            
-            check_count = line_count(filename1)
+            email_address = []
+            check_count = get_line_count(filename1)
             subs = get_subs(filename1)
             pool = ThreadPool(12)
-            print '\nBrute Forcing Sub-Domains\n\n\tWhile you are waiting we will gather email addresses'
-            print '\nGathering Email Addresses From Google and Bing'
-            userCountry, userServer = get_gserver()
+            print '\nBrute Forcing Sub-Domains\n\n\tWhile you are waiting we will gather email addresses\n\tand LinkedIn users'
+            print '\nGathering Email Addresses From Google, Bing And LinkedIn'
+            userCountry, userServer = action_country_id()
             start_time_total = time.time()
             start_time_email = time.time()
-            t1 = threading.Thread(target=google_search, args=(domain, userCountry, userServer,))
-            t2 = threading.Thread(target=bing_search, args=(domain,))
+            q1 = Queue.Queue()
+            q2 = Queue.Queue()
+            q3 = Queue.Queue()
+            t1 = threading.Thread(target=action_google_true, args=(domain, userCountry, userServer,q1))
+            t2 = threading.Thread(target=action_bing_true, args=(domain,q2))
+            t3 = threading.Thread(target=action_linkedin, args=(domain,q3))
             t1.start()
             t2.start()
+            t3.start()
             t1.join()
             t2.join()
+            t3.join()
             time_spent_email = time.time() - start_time_email
+            google_true_results = q1.get()
+            bing_true_results = q2.get()
+            linkedin_results = q3.get()
+                      
             start_time_brute = time.time()
-            pool.map(get_brutes, subs)
+            pool.map(action_brute, subs)
             time_spent_brute = time.time() - start_time_brute
             pool.close()
             time_spent_total = time.time() - start_time_total
-            
+#Clean Brute Results           
             if targets == []:
                 targets.append("temp-enter")
-            
             domains = list(set(targets + netcraft_list))
             domains.sort()
             if "temp-enter" in domains: domains.remove("temp-enter")
-            target_dict = dict((x.split(' ') for x in domains))
+            brute_results_dict = dict((x.split(' ') for x in domains))
 #Outputing data
-            output_data(target_dict, sub_intrest)
+            action_output_wild_false(brute_results_dict, sub_intrest, google_true_results, bing_true_results, linkedin_results, check_count)
     else:
 #Vuln Zone Trans
         print '\nGathering Email Addresses From Google and Bing'
-        userCountry, userServer = get_gserver()
+        userCountry, userServer = action_country_id()
         start_time_email = time.time()
-        t1 = threading.Thread(target=google_search, args=(domain, userCountry, userServer,))
+        t1 = threading.Thread(target=action_google_true, args=(domain, userCountry, userServer,))
         t1.start()
-        t2 = threading.Thread(target=bing_search, args=(domain,))
+        t2 = threading.Thread(target=action_bing_true, args=(domain,))
         t2.start()
         t1.join()
         t2.join()
+        result = q.get()
         time_spent_email = time.time() - start_time_email
         temp1 = [item.lower() for item in email_address]
         new_list = sorted(set(temp1))
@@ -638,5 +876,3 @@ if __name__ == "__main__":
         print '\nPotential Emails Found: {}' .format(str(temp))   
         time_spent_email_f = str(datetime.timedelta(seconds=(time_spent_email))).split('.')[0]
         print "\nEmail Enumeration: {0}\n".format(time_spent_email_f)
-
-      
