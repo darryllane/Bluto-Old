@@ -17,6 +17,7 @@ setup(
         "termcolor",
         "BeautifulSoup4",
         "requests",
+        "lxml",
     ],
 )
 
