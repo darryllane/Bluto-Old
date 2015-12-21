@@ -556,13 +556,13 @@ def action_country_id():
         try:
             if prox == True:
                 proxy = {'http' : 'http://127.0.0.1:8080'}
-                r = requests.get(r'http://ip.pycox.com/json', proxies=proxy)
-                ip = r.json()['q']
+                r = requests.get(r'http://freegeoip.net/json/', proxies=proxy)
+                ip = r.json()['ip']
                 originCountry = r.json()['country_name'] 
                 
             else:  
-                r = requests.get(r'http://ip.pycox.com/json')
-                ip = r.json()['q']
+                r = requests.get(r'http://freegeoip.net/json/')
+                ip = r.json()['ip']
                 originCountry = r.json()['country_name']
                 
         except ValueError as e:
