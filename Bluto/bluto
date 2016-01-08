@@ -31,7 +31,7 @@ prox = False
 default_s = False
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
-version = "1.1.14"
+version = "1.1.15"
 
 sites = site.getsitepackages()
 for item in sites:
@@ -366,6 +366,8 @@ def action_zone_transfer(zn_list, domain):
             except Exception as e:
                 error = str(e)
                 if error == "[Errno -5] No address associated with hostname":
+                    pass
+                if error == 'Errno -2] Name or service not known':
                     pass
                 else:
                     print """An unexpected error has occured. Please report the error and it's context to https://github.com/RandomStorm/Bluto/issues, thank you."""
