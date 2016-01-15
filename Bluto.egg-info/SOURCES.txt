@@ -2,8 +2,10 @@ LICENSE.txt
 MANIFEST.in
 README.md
 setup.py
+Bluto/.DS_Store
 Bluto/__init__.py
 Bluto/bluto
+Bluto/blutoI
 Bluto.egg-info/PKG-INFO
 Bluto.egg-info/SOURCES.txt
 Bluto.egg-info/dependency_links.txt
@@ -11,6 +13,10 @@ Bluto.egg-info/requires.txt
 Bluto.egg-info/top_level.txt
 Bluto/doc/countries.txt
 Bluto/doc/disconnect_countries.txt
+Bluto/doc/internal-brute-names copy.txt
+Bluto/doc/internal-brute-names.txt
+Bluto/doc/lots-of-spinach.txt
 Bluto/doc/sub_interest.txt
 Bluto/doc/subdomains-top1mil-20000.txt
+Bluto/doc/subdomains-top1mil.txt
 Bluto/doc/user_agents.txt
