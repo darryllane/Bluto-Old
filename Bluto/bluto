@@ -339,6 +339,8 @@ def action_zone_transfer(zn_list, domain):
                             
         except Exception as e:
             error = str(e)
+            if error == 'Errno -2] Name or service not known':
+                pass            
             if error == "[Errno 54] Connection reset by peer" or "No answer or RRset not for qname":
                 vuln = False
                 vulnerable_listF.append(ns)
