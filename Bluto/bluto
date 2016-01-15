@@ -31,7 +31,7 @@ prox = False
 default_s = False
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
-version = "1.1.15"
+version = "1.1.16"
 
 sites = site.getsitepackages()
 for item in sites:
@@ -120,7 +120,6 @@ def action_output_vuln_zone(google_results, bing_true_results, linkedin_results)
     print '\nStats and Evidence Report:'
     print '\n\tEmail Evidence:\n'
     if email_evidence_results:
-        
         for email, url in email_evidence_results:
             if email == []:
                 pass
@@ -205,12 +204,15 @@ def action_output_wild_true(google_results, bing_true_results, linkedin_results)
     
     print '\nStats and Evidence Report:'
     print '\n\tEmail Evidence:\n'
-    for email, url in email_evidence_results:
-        if email == []:
-            pass
-        else:
-            print colored(email, 'red')
-            print colored(url, 'green')
+    if email_evidence_results:
+        for email, url in email_evidence_results:
+            if email == []:
+                pass
+            else:
+                print colored(email, 'red')
+                print colored(url, 'green')
+    else:
+        print '\tNo Data To Be Found'
     
     print '\n\tLinkedIn Evidence:\n'
     if linkedin_evidence_results:
@@ -294,12 +296,15 @@ def action_output_wild_false(brute_results_dict, sub_intrest, google_results, bi
     
     print '\nStats and Evidence Report:'
     print '\n\tEmail Evidence:\n'
-    for email, url in email_evidence_results:
-        if email == []:
-            pass
-        else:
-            print colored(email, 'red')
-            print colored(url, 'green')
+    if email_evidence_results:
+        for email, url in email_evidence_results:
+            if email == []:
+                pass
+            else:
+                print colored(email, 'red')
+                print colored(url, 'green')
+    else:
+        print '\tNo Data To Be Found'
     
     print '\n\tLinkedIn Evidence:\n'
     for email, url_href, person in linkedin_evidence_results:
@@ -431,12 +436,16 @@ def action_wild_cards(domain):
     except dns.resolver.NoNameservers:
         print '\n\tNo Name Servers'
         pass
-        
+    
+    except dns.resolver.NoAnswer:
+        pass    
+    
     except dns.resolver.NXDOMAIN:
         return False
     else:
-        return True    
-
+        return True
+    
+    
 def action_brute(subdomain):
     try:   
         myAnswers = myResolver.query(subdomain)
@@ -948,6 +957,12 @@ BBBBBBBBBBBBBBBBB  llllllll   uuuuuuuu  uuuu       ttttttttttt    ooooooooooo
 """ . format (colored("Author: Darryl Lane", 'blue'),colored("Twitter: @darryllane101", 'blue'),colored("DNS Recon", 'green'),colored("Brute Forcer", 'green'),colored("DNS Zone Transfers", 'green'),colored("https://github.com/RandomStorm/Bluto", 'green'),colored("v" + version, 'red'),colored("Email Enumeration", 'green'),colored("User Enumeration", 'green'))
 
 if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        if str(sys.argv[1]) == '-E':
+            filename1 = path + "/Bluto/doc/lots-of-spinach.txt"    
+    else:
+        pass  
+
     domain = raw_input("\nTarget Domain: ")
     emails = []   
 #Detail Call
