@@ -30,7 +30,7 @@ import traceback
 global clean_dump
 clean_dump = []
 targets = []
-prox = False
+prox = True
 default_s = False
 debug = True
 myResolver = dns.resolver.Resolver()
@@ -293,11 +293,15 @@ def action_output_wild_false(brute_results_dict, sub_intrest, google_results, bi
     f_emails = sorted(final_emails)
     
     print '\nEmail Addresses:\n'
-
-    for email in f_emails:
+    
+    if f_emails:
         
-        print str(email).replace("u'","").replace("'","").replace('[','').replace(']','')          
-              
+        for email in f_emails:
+            
+            print str(email).replace("u'","").replace("'","").replace('[','').replace(']','')          
+    else:
+        print '\tNo Data To Be Found'
+        
     print '\nLinkedIn Results:\n'
     
     sorted_person = sorted(person_seen)
@@ -702,7 +706,7 @@ def action_linkedin(domain, userCountry, q, company):
                 url = div.find('cite').text.encode('utf-8')
                 person = str((title_temp.split(' | ')[0]))
                 description_temp = div.find('div', {'class': 'b_caption'})
-                description = description_temp.find('p').text.encode('utf-8').replace('’s','').replace('View ','').replace(person,'').lstrip('. ').replace('• ','').replace('professional profile on LinkedIn. ... ','').lstrip('’ ').replace("professional profile on LinkedIn. LinkedIn is the world's largest business network",'').replace('...','')     
+                description = description_temp.find('p').text.encode('utf-8').replace('’s','').replace('View ','').replace(person,'').lstrip('. ').replace('• ','').replace('professional profile on LinkedIn. ... ','').lstrip('’ ').replace("professional profile on LinkedIn. LinkedIn is the world's largest business network",'').replace('...','').lstrip(', ').lstrip(' ')    
                 
                 
                 entries_tuples.append((url, person.title(), description))
@@ -726,7 +730,7 @@ def action_google(domain, userCountry, userServer, q):
     entries_tuples = []
     seen = set()
     results = []    
-    for start in range(1,50,1):
+    for start in range(1,20,1):
         ua = random.choice(uas)
         try:
             if prox == True:
@@ -747,6 +751,7 @@ def action_google(domain, userCountry, userServer, q):
             else:
                 response = requests.get(link, headers=headers, params=payload)
             
+            response.raise_for_status()
             response.text.encode('ascii', 'ignore').decode('ascii')
             soup = BeautifulSoup(response.text, "lxml")       
 
@@ -771,13 +776,13 @@ def action_google(domain, userCountry, userServer, q):
                 if urls[1] not in seen:
                     results.append(urls)
                     seen.add(urls[1])         
+        except requests.exceptions.HTTPError as e: 
+            if e.response.status_code == 503:
+                print colored('Google is responding with a Captcha, other searchs will continue\n', 'red')
+                break        
         except AttributeError as f:
             #traceback.print_exc()
             pass
-        except requests.exceptions.HTTPError as e: 
-            if e.response.status_code == 503:
-                print colored('Google is responding with a Captcha\n', 'red')
-                break
             
     q.put(sorted(results))     
 
