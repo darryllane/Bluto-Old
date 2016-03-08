@@ -30,12 +30,12 @@ import traceback
 global clean_dump
 clean_dump = []
 targets = []
-prox = True
+prox = False
 default_s = False
 debug = True
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
-version = "1.1.17"
+version = "1.1.18"
 
 sites = site.getsitepackages()
 for item in sites:
@@ -706,8 +706,7 @@ def action_linkedin(domain, userCountry, q, company):
                 url = div.find('cite').text.encode('utf-8')
                 person = str((title_temp.split(' | ')[0]))
                 description_temp = div.find('div', {'class': 'b_caption'})
-                description = description_temp.find('p').text.encode('utf-8').replace('’s','').replace('View ','').replace(person,'').lstrip('. ').replace('• ','').replace('professional profile on LinkedIn. ... ','').lstrip('’ ').replace("professional profile on LinkedIn. LinkedIn is the world's largest business network",'').replace('...','').lstrip(', ').lstrip(' ')    
-                
+                description = description_temp.find('p').text.encode('utf-8').lstrip('View ').replace("’s","").replace("professional profile on LinkedIn. ... ","").replace(" professional profile on LinkedIn. LinkedIn is the world's largest business network, ...","").replace("’S","").replace("’","").replace("professional profile on LinkedIn.","").replace(person, '').lstrip(' ').lstrip('. ').replace("LinkedIn is the world's largest business network, helping professionals like  discover ...","").replace("LinkedIn is the world's largest business network, helping professionals like  discover inside ...","").replace("professional profile on ... • ","").replace("professional ... ","").replace("...","").lstrip('•').lstrip(' ')
                 
                 entries_tuples.append((url, person.title(), description))
         
