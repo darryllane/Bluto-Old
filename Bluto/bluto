@@ -234,6 +234,7 @@ def action_output_wild_true(google_results, bing_true_results, linkedin_results)
             print colored(person, 'red')
             print colored(description, 'grey')
             print colored(url, 'grey')
+            print '\n'
     else:
         print '\tNo Data To Be Found'
         
@@ -778,7 +779,7 @@ def action_google(domain, userCountry, userServer, q):
                     seen.add(urls[1])         
         except requests.exceptions.HTTPError as e: 
             if e.response.status_code == 503:
-                print colored('Google is responding with a Captcha, other searchs will continue\n', 'red')
+                print colored('Google is responding with a Captcha, other searches will continue\n', 'red')
                 break        
         except AttributeError as f:
             #traceback.print_exc()
