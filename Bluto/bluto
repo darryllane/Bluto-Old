@@ -35,12 +35,9 @@ default_s = False
 debug = True
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
-<<<<<<< HEAD
 version = "1.1.19"
 e_hunter = "2b0ab19df982a783877a6b59b982fdba4b6c3669"
-=======
-version = "1.1.16"
->>>>>>> master
+
 
 sites = site.getsitepackages()
 for item in sites:
