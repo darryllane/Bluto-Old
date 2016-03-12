@@ -327,16 +327,11 @@ def action_output_wild_false(brute_results_dict, sub_intrest, google_results, bi
     print '\n\tEmail Evidence:\n'
     if email_evidence_results:
         for email, url in email_evidence_results:
-<<<<<<< HEAD
-            print colored(email, 'red')
-            print colored(url, 'green')                    
-=======
             if email == []:
                 pass
             else:
                 print colored(email, 'red')
                 print colored(url, 'green')
->>>>>>> master
     else:
         print '\tNo Data To Be Found'
     
