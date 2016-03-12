@@ -1,7 +1,7 @@
 Metadata-Version: 1.0
 Name: Bluto
 Version: 1.1.19
-Summary: DNS recon, brutfocing, DNS transfers, Email Enumeration.
+Summary: DNS recon, Bruteforcing, DNS transfers, Email Enumeration, Staf Enumeration.
 Home-page: https://github.com/RandomStorm/Bluto
 Author: Darryl lane
 Author-email: DarrylLane101@gmail.com
@@ -48,4 +48,4 @@ Description: **BLUTO**
         `sudo pip install git+git://github.com/RandomStorm/Bluto --upgrade`
         
         
-Platform: UNKNOWN
+Platform: Linux / OSX
