@@ -35,7 +35,7 @@ default_s = False
 debug = True
 myResolver = dns.resolver.Resolver()
 myResolver.nameservers = ['8.8.8.8']
-version = "1.1.19"
+version = "1.1.20"
 e_hunter = "2b0ab19df982a783877a6b59b982fdba4b6c3669"
 
 
@@ -604,14 +604,14 @@ def action_country_id():
         try:
             if prox == True:
                 proxy = {'http' : 'http://127.0.0.1:8080'}
-                r = requests.get(r'http://freegeoip.net/json/', proxies=proxy)
+                r = requests.get(r'http://geoip.nekudo.com/api/', proxies=proxy)
                 ip = r.json()['ip']
-                originCountry = r.json()['country_name'] 
+                originCountry = r.json()['country']['name'] 
                 
             else:  
-                r = requests.get(r'http://freegeoip.net/json/')
+                r = requests.get(r'http://geoip.nekudo.com/api/')
                 ip = r.json()['ip']
-                originCountry = r.json()['country_name']
+                originCountry = r.json()['country']['name'] 
                 
         except ValueError as e:
             if o == 0:
