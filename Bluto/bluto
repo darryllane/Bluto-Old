@@ -30,7 +30,7 @@ import traceback
 global clean_dump
 clean_dump = []
 targets = []
-prox = True
+prox = False
 default_s = False
 debug = True
 myResolver = dns.resolver.Resolver()
