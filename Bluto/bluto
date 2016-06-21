@@ -30,7 +30,7 @@ import traceback
 global clean_dump
 clean_dump = []
 targets = []
-prox = False
+prox = True
 default_s = False
 debug = True
 myResolver = dns.resolver.Resolver()
@@ -526,26 +526,16 @@ def action_netcraft(domain):
     netcraft_list = []
     print "\nPassive Gatherings From NetCraft\n"
     try:
-        res = NetcraftAPI({'verbose': True}).search(domain)
+        link = "http://searchdns.netcraft.com/?restriction=site+contains&host=*.{}&lookup=wait..&position=limited" .format (domain)
+        response = requests.get(link)
+        soup = BeautifulSoup(response.content, 'lxml')
+        pattern = 'rel="nofollow">([a-z\.\-A-Z0-9]+)<FONT COLOR="#ff0000">'
+        sub_results = re.findall(pattern, response.content)
+        if sub_results:
+            for sub in sub_results:
+                netcraft_list.append(sub + '.' + domain)
     except Exception as e:
-        print e
-        sys.exit()
-    
-    for item in res:
-        data1 = str(item + "." + domain)
-        try:
-            addr = socket.gethostbyname(data1)
-            netcraft_list.append(item + "." + domain + " " + addr)
-        except Exception as e:
-            error = str(e)
-            if error == "[Errno -2] Name or service not known":
-                pass            
-            else:
-                print "An unexpected error has occured. Please report the error and it's context to https://github.com/RandomStorm/Bluto/issues, thank you."
-                traceback.print_exc()
-                continue
-            
-    netcraft_list.sort()
+        traceback.print_exc
         
     for item in netcraft_list:
             print colored(item, 'red')
@@ -671,8 +661,8 @@ def action_country_id():
                 userCountry = 'DEAFULT'
                 pass
             else:
-                print 'Bluto currently doesn\'t have your countries google server available.\nPlease navigate to "http://www.telize.com/geoip/" and post an issue to "https://github.com/RandomStorm/Bluto/issues"\nincluding the country value as shown in the json output\nYou have been assigned to http://www.google.com for now.'
-                userServer = 'http://www.google.co.uk'
+                print 'Bluto currently doesn\'t have your countries google server available.\nPlease navigate to "http://geoip.nekudo.com/api/" and post an issue to "https://github.com/RandomStorm/Bluto/issues"\nincluding the country value as shown in the json output\nYou have been assigned to http://www.google.com for now.'
+                userServer = 'https://www.google.co.uk'
                 userCountry = 'United Kingdom'
     
     print '\n\tSearching From: {0}\n\tGoogle Server: {1}\n' .format(userCountry.title(), userServer)
@@ -824,88 +814,7 @@ def action_bing_true(domain,q):
             continue  
     q.put(sorted(emails))
         
-class NetcraftAPI(object):
-    """
-    This == the (unofficial) Python API for the netcraft.com Website.
-    Using this code, you can retrieve subdomains. This has been modified from its 
-    original state by the authors of Bluto, the original can be found on the following url. 
-    https://github.com/PaulSec/API-netcraft.com
-    
-    """    
 
-    """
-        NetcraftAPI Main Handler
-    """
-
-    _instance = None
-    _verbose = False
-
-    def __init__(self, arg=None):
-        pass
-
-    def __new__(cls, *args, **kwargs):
-        """
-            __new__ builtin
-        """
-        if not cls._instance:
-            cls._instance = super(NetcraftAPI, cls).__new__(
-                cls, *args, **kwargs)
-            if (args and args[0] and args[0]['verbose']):
-                cls._verbose = True
-        return cls._instance
-
-    def display_message(self, s):
-        if (self._verbose):
-            print '%s' % s
-
-    def search(self, domain):
-        res = []
-        url = "http://searchdns.netcraft.com/?restriction=site+contains&host=*.%s&lookup=wait..&position=limited" % domain
-        s = requests.session()
-        s.get('http://searchdns.netcraft.com/')
-        req = s.get(url)
-
-        challenge_cookie = req.headers['set-cookie'].split('=')[1].split(';')[0]
-        string = urllib2.unquote(challenge_cookie)
-        challenge_cookie_value = hashlib.sha1(string).hexdigest()
-        cookies = {'netcraft_js_verification_response': challenge_cookie_value}
-
-        req = s.get(url, cookies = cookies)
-        soup = BeautifulSoup(req.content, "lxml")
-
-        pattern = 'Found (\d+) site'
-        number_results = re.findall(pattern, req.content)
-
-        if (len(number_results) > 0 and number_results[0] != '0'):
-            number_results = int(number_results[0])
-            number_pages = int(math.ceil(number_results / 20)) + 1
-
-            pattern = 'rel="nofollow">([a-z\.\-A-Z0-9]+)<FONT COLOR="#ff0000">'
-            subdomains = re.findall(pattern, req.content)
-            res.extend(subdomains)
-            last_result = subdomains[-1]
-            # "Last result: %s" % last_result
-
-            for index_page in xrange(1, number_pages):
-                url = "http://searchdns.netcraft.com/?host=*.%s&last=%s.%s&from=%s&restriction=site contains&position=limited" % (domain, last_result, domain, (index_page * 20 + 1))
-                req = s.get(url, cookies = cookies)
-                pattern = 'rel="nofollow">([a-z\-\.A-Z0-9]+)<FONT COLOR="#ff0000">'
-                subdomains = re.findall(pattern, req.content)
-                # print req.content
-                res.extend(subdomains)
-                try:
-                    for subdomain in subdomains:
-                        hostname = ('{}.{}' .format (subdomain, domain))
-                        addr = socket.gethostbyname(hostname)                    
-                        #self.display_message('{}.{} {}' .format (subdomain, domain, addr))
-                except Exception as e:
-                    pass
-                last_result = subdomains[-1]
-            return res
-        else:
-            self.display_message("\tNo results found for %s" % domain)
-            return res
-        
         
 print """
 BBBBBBBBBBBBBBBBB  lllllll                       tttt                          
