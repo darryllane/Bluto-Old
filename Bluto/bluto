@@ -531,14 +531,18 @@ def action_netcraft(domain):
         soup = BeautifulSoup(response.content, 'lxml')
         pattern = 'rel="nofollow">([a-z\.\-A-Z0-9]+)<FONT COLOR="#ff0000">'
         sub_results = re.findall(pattern, response.content)
-        if sub_results:
-            for sub in sub_results:
-                netcraft_list.append(sub + '.' + domain)
+        
     except Exception as e:
         traceback.print_exc
-        
-    for item in netcraft_list:
-            print colored(item, 'red')
+    
+    if sub_results:
+        for item in sub_results:
+            netcheck = myResolver.query(item + '.' + domain)
+            for data in netcheck:
+                netcraft_list.append(item + '.' + domain + ' ' + str(data))            
+                print colored(item + '.' + domain, 'red')
+    else:
+        print '\tNo Results Found'
             
     return netcraft_list
 
