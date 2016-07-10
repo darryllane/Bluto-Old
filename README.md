@@ -6,7 +6,7 @@ New version and repo can be found
 
 https://github.com/darryllane/Bluto
 
-Latest Version Features:
+**Latest Version Features:**
 
 >DNS recon
 
@@ -38,6 +38,8 @@ Latest Version Features:
 
 >LinkedIn Searches
 
+
+Old Version
 -----
 **DNS recon | Brute forcer | DNS Zone Transfer | Email Enumeration**
  
