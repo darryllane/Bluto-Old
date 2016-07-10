@@ -1,4 +1,16 @@
 **BLUTO**
+
+Bluto has moved to a new repo, this version is now deprecated.
+
+New version and repo can be found
+
+https://github.com/darryllane/Bluto
+
+
+
+
+
+
 -----
 **DNS recon | Brute forcer | DNS Zone Transfer | Email Enumeration**
  
